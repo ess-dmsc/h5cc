@@ -1,12 +1,12 @@
-# README #
+# H5CC - a better HDF5 library #
 
-### What is this repository for? ###
+### What is it for? ###
 
-This is a better HDF5 library. It actually follows modern C++ idioms. It doesn't hurt the eyes.
+This is a better C++ library for HDF5. It follows modern C++ idioms. It doesn't hurt the eyes.
 
 ### How do I get set up? ###
 
-Copy it to your project and use it. The included test executable will provide you some examples of how to use it.
+Copy it to your project and use it. The included main.cpp has examples of how to use it.
 
 You can also compile and run tests.
 Go to some build directory, a different directory, not this directory. Run the following:
