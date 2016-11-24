@@ -1,36 +1,11 @@
 #include <memory>
 #include "H5CC_File.h"
 
-#include <boost/filesystem.hpp>
 #include <set>
 #include "ExceptionUtil.h"
 
-namespace fs = boost::filesystem;
-using namespace std;
-
-std::set<fs::path> files_in(fs::path path, std::string ext = "")
-{
-  fs::directory_iterator end_iter;
-  std::set<fs::path> ret;
-  if ( fs::exists(path) && fs::is_directory(path))
-    for( fs::directory_iterator it(path); it != end_iter ; ++it)
-    {
-      if (!ext.empty() && (it->path().extension() != ext))
-        continue;
-      if (fs::is_regular_file(it->status()) )
-        ret.insert(*it);
-    }
-  return ret;
-}
-
-
-
 int main(int argc, char* argv[])
 {
-  for (auto f : files_in(fs::current_path(), ".h5"))
-    fs::remove(f);
-
-
   H5CC::File file;
 
   std::vector<uint16_t> d {1,2,3,4,5,6,7,8,9};

@@ -5,9 +5,8 @@ project(H5CCTest CXX)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 find_package(HDF5 COMPONENTS CXX REQUIRED)
-find_package(Boost COMPONENTS system filesystem REQUIRED)
 
-include_directories(h5cc ${HDF5_INCLUDE_DIR} ${Boost_INCLUDE_DIR})
+include_directories(h5cc ${HDF5_INCLUDE_DIR})
 
 add_executable(
     test 
@@ -30,4 +29,4 @@ add_executable(
     h5cc/H5CC_Space.h
 )
 
-target_link_libraries(test ${HDF5_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(test ${HDF5_LIBRARIES})

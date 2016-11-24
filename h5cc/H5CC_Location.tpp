@@ -1,4 +1,3 @@
-#include <boost/algorithm/string.hpp>
 #include "H5CC_Exception.h"
 #include "H5CC_Common.h"
 
