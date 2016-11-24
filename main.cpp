@@ -1,8 +1,6 @@
-#include <memory>
 #include "H5CC_File.h"
-
-#include <set>
 #include "ExceptionUtil.h"
+#include <cassert>
 
 int main(int argc, char* argv[])
 {

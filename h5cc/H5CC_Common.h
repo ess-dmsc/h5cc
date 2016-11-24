@@ -5,6 +5,7 @@
 #include "H5PredType.h"
 #include "H5StrType.h"
 #include <string>
+#include <stdint.h>
 
 struct pred_type_visitor
 {
@@ -18,8 +19,8 @@ struct pred_type_visitor
   inline H5::PredType operator () (const uint32_t&) const { return H5::PredType::NATIVE_UINT32; }
   inline H5::PredType operator () (const uint64_t&) const { return H5::PredType::NATIVE_UINT64; }
 
-  inline H5::PredType operator () (const float_t&) const { return H5::PredType::NATIVE_FLOAT; }
-  inline H5::PredType operator () (const double_t&) const { return H5::PredType::NATIVE_DOUBLE; }
+  inline H5::PredType operator () (const float&) const { return H5::PredType::NATIVE_FLOAT; }
+  inline H5::PredType operator () (const double&) const { return H5::PredType::NATIVE_DOUBLE; }
   inline H5::PredType operator () (const long double&) const { return H5::PredType::NATIVE_LDOUBLE; }
 
   inline H5::StrType operator () (const std::string&) const { return H5::StrType(H5::PredType::C_S1, H5T_VARIABLE); }
