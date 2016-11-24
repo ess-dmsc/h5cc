@@ -5,7 +5,6 @@
 #include "H5PredType.h"
 #include "H5StrType.h"
 #include <string>
-#include <boost/variant.hpp>
 
 struct pred_type_visitor
 {
