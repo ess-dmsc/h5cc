@@ -9,7 +9,7 @@ find_package(HDF5 COMPONENTS CXX REQUIRED)
 include_directories(h5cc ${HDF5_INCLUDE_DIR})
 
 add_executable(
-    test 
+    h5cc_test 
     
     main.cpp 
     ExceptionUtil.h
@@ -29,4 +29,4 @@ add_executable(
     h5cc/H5CC_Space.h
 )
 
-target_link_libraries(test ${HDF5_LIBRARIES})
+target_link_libraries(h5cc_test ${HDF5_LIBRARIES})
