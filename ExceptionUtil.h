@@ -5,6 +5,7 @@
 #include <system_error>
 #include <future>
 #include <iostream>
+#include <ios>
 
 template <typename T>
 void processCodeException(const T& e)
