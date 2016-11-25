@@ -22,7 +22,7 @@ node {
         stage("Run CMake") {
             sh "rm -r *"
             sh "HDF5_ROOT=\$(pwd)/../libhdf5/usr \
-                cmake ../code
+                cmake ../code"
         }
 
         stage("Build project") {
