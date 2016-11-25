@@ -26,7 +26,7 @@ node {
         }
 
         stage("Build project") {
-            sh "make"
+            sh "make VERBOSE=1"
         }
     }
 }
