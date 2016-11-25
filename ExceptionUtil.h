@@ -10,49 +10,47 @@
 template <typename T>
 void processCodeException(const T& e)
 {
-  using namespace std;
   auto c = e.code();
-  cerr << "- category:         " << c.category().name() << endl;
-  cerr << "- value:            " << c.value() << endl;
-  cerr << "- message:          " << c.message() << endl;
-  cerr << "- def category:     " << c.default_error_condition().category().name() << endl;
-  cerr << "- def value:        " << c.default_error_condition().value() << endl;
-  cerr << "- def message:      " << c.default_error_condition().message() << endl;
+  std::cerr << "- category:         " << c.category().name() << std::endl;
+  std::cerr << "- value:            " << c.value() << std::endl;
+  std::cerr << "- message:          " << c.message() << std::endl;
+  std::cerr << "- def category:     " << c.default_error_condition().category().name() << std::endl;
+  std::cerr << "- def value:        " << c.default_error_condition().value() << std::endl;
+  std::cerr << "- def message:      " << c.default_error_condition().message() << std::endl;
 }
 
 void printException()
 {
-  using namespace std;
   try
   {
     throw;
   }
-  catch (const ios_base::failure& e)
+  catch (const std::ios_base::failure& e)
   {
-    cerr << "I/O EXCEPTION: " << e.what() << endl;
+    std::cerr << "I/O EXCEPTION: " << e.what() << std::endl;
+//    processCodeException(e);
+  }
+  catch (const std::system_error& e)
+  {
+    std::cerr << "SYSTEM EXCEPTION: " << e.what() << std::endl;
     processCodeException(e);
   }
-  catch (const system_error& e)
+  catch (const std::future_error& e)
   {
-    cerr << "SYSTEM EXCEPTION: " << e.what() << endl;
+    std::cerr << "FUTURE EXCEPTION: " << e.what() << std::endl;
     processCodeException(e);
   }
-  catch (const future_error& e)
+  catch (const std::bad_alloc& e)
   {
-    cerr << "FUTURE EXCEPTION: " << e.what() << endl;
-    processCodeException(e);
+    std::cerr << "BAD ALLOC EXCEPTION: " << e.what() << std::endl;
   }
-  catch (const bad_alloc& e)
+  catch (const std::exception& e)
   {
-    cerr << "BAD ALLOC EXCEPTION: " << e.what() << endl;
-  }
-  catch (const exception& e)
-  {
-    cerr << "EXCEPTION: " << e.what() << endl;
+    std::cerr << "EXCEPTION: " << e.what() << std::endl;
   }
   catch (...)
   {
-    cerr << "EXCEPTION (unknown)" << endl;
+    std::cerr << "EXCEPTION (unknown)" << std::endl;
   }
 }
 
