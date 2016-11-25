@@ -28,5 +28,9 @@ node {
         stage("Build project") {
             sh "make VERBOSE=1"
         }
+
+        stage("Run test") {
+            sh "./h5cc_test"
+        }
     }
 }
