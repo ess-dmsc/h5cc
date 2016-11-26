@@ -1,4 +1,4 @@
-test
+h5cc_test
 *.h5
 /build
 
@@ -39,4 +39,3 @@ Makefile*
 
 # QtCtreator CMake
 CMakeLists.txt.user
-
