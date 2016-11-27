@@ -14,7 +14,7 @@ add_executable(
     main.cpp 
     ExceptionUtil.h
     h5cc/H5CC_Common.cpp
-    h5cc/H5CC_Common.h
+    h5cc/H5CC_Types.h
     h5cc/H5CC_DataSet.cpp
     h5cc/H5CC_DataSet.h
     h5cc/H5CC_DataSet.tpp
