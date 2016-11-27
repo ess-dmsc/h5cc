@@ -1,5 +1,5 @@
 #include "H5CC_Exception.h"
-#include "H5CC_Common.h"
+#include "H5CC_Types.h"
 
 #define TT template<typename T>
 #define TDT template<typename DT>

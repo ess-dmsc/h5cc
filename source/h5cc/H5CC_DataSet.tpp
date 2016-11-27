@@ -1,4 +1,4 @@
-﻿#include "H5CC_Common.h"
+﻿#include "H5CC_Types.h"
 #include "H5CC_Exception.h"
 
 namespace H5CC {
