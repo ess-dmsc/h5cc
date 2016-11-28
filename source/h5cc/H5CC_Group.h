@@ -23,8 +23,12 @@ public:
   bool has_dataset(std::string name) const { return has_member(name, H5O_TYPE_DATASET); }
   std::list<std::string> datasets() const { return members(H5O_TYPE_DATASET); }
   DataSet open_dataset(std::string name) const;
-  template <typename DT> DataSet create_dataset(std::string name, std::initializer_list<hsize_t> dims);
-  template <typename DT> DataSet require_dataset(std::string name, std::initializer_list<hsize_t> dims);
+  template <typename DT> DataSet create_dataset(std::string name,
+                         std::initializer_list<hsize_t> dims,
+                         std::initializer_list<hsize_t> chunkdims = {});
+  template <typename DT> DataSet require_dataset(std::string name,
+                         std::initializer_list<hsize_t> dims,
+                         std::initializer_list<hsize_t> chunkdims = {});
 
   bool has_group(std::string name) const { return has_member(name, H5O_TYPE_GROUP); }
   std::list<std::string> groups() const { return members(H5O_TYPE_GROUP); }

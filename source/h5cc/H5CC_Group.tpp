@@ -93,12 +93,33 @@ TT void Groupoid<T>::clear()
     this->remove(m);
 }
 
-TT TDT DataSet Groupoid<T>::create_dataset(std::string name, std::initializer_list<hsize_t> dims)
+TT TDT DataSet Groupoid<T>::create_dataset(std::string name,
+                            std::initializer_list<hsize_t> dims,
+                            std::initializer_list<hsize_t> chunkdims)
 {
   try
   {
-    return DataSet(Location<T>::location_.createDataSet(name, get_pred_type(DT()), Space(dims).space()),
-                   name);
+    Space filespace(dims);
+    Space chunkspace(chunkdims);
+    
+    if (!chunkspace.rank())
+        return DataSet(Location<T>::location_.createDataSet(name,
+                       get_pred_type(DT()), Space(dims).space()),
+                       name);
+                   
+    if (!filespace.contains(chunkspace))
+        return DataSet(Location<T>::location_.createDataSet(name,
+                       get_pred_type(DT()), Space(dims).space()),
+                       name); //throw instead
+    
+    H5::DSetCreatPropList  plist;
+    plist.setChunk(chunkspace.rank(), chunkspace.dims().data());
+    plist.setFillValue(get_pred_type(DT()), 0);
+    plist.setDeflate(1);
+    
+    return DataSet(Location<T>::location_.createDataSet(name,
+                   get_pred_type(DT()), Space(dims).space(), plist),
+                   name); 
   }
   catch (...)
   {
@@ -106,11 +127,13 @@ TT TDT DataSet Groupoid<T>::create_dataset(std::string name, std::initializer_li
   }
 }
 
-TT TDT DataSet Groupoid<T>::require_dataset(std::string name, std::initializer_list<hsize_t> dims)
+TT TDT DataSet Groupoid<T>::require_dataset(std::string name, 
+                            std::initializer_list<hsize_t> dims,
+                            std::initializer_list<hsize_t> chunkdims)
 {
   if (has_dataset(name))
     remove(name);
-  return create_dataset<DT>(name, dims);
+  return create_dataset<DT>(name, dims, chunkdims);
 }
 
 TT DataSet Groupoid<T>::open_dataset(std::string name) const

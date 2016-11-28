@@ -4,6 +4,8 @@ project(H5CCTest CXX)
 # Set C++11 flag.
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-return-type")
+
 find_package(HDF5 COMPONENTS CXX REQUIRED)
 
 include_directories(h5cc ${HDF5_INCLUDE_DIR})

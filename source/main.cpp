@@ -4,10 +4,10 @@
 
 int main(int argc, char* argv[])
 {
-  H5CC::File file;
+  H5CC::File file("f1.h5");
 
   std::vector<uint16_t> d {1,2,3,4,5,6,7,8,9};
-  file.open("f1.h5");
+//  file.open("f1.h5"); //Broken!
   auto dataset = file.create_dataset<uint16_t>("dset", {3,3});
   dataset.write(d);
 
@@ -27,14 +27,13 @@ int main(int argc, char* argv[])
 
 //  for (auto a : dataset.attributes())
 //    cout << a << " = " << dataset.read_attribute(a).to_string() << endl;
-
   try
   {
     dataset.read_attribute<int>("a2");
   }
   catch (...)
   {
-    //printException();
+    printException();
   }
 
   dataset.remove_attribute("a1");
@@ -42,7 +41,7 @@ int main(int argc, char* argv[])
 
   dataset.write_attribute("a2", double(1.42));
   dataset.write_attribute("a3", int64_t(666));
-  dataset.write_attribute("a4", std::string("hello"));
+  //dataset.write_attribute("a4", std::string("hello"));  broken!
   dataset.write_attribute("a5", uint32_t(77));
 
   file.create_group("g1");
@@ -57,7 +56,7 @@ int main(int argc, char* argv[])
   }
   catch (...)
   {
-    //printException();
+    printException();
   }
 
   auto g2 = file.require_group("g2");
