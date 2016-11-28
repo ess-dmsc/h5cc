@@ -19,7 +19,7 @@ struct pred_type_visitor
   inline H5::PredType operator () (const uint32_t&) const { return H5::PredType::NATIVE_UINT32; }
   inline H5::PredType operator () (const uint64_t&) const { return H5::PredType::NATIVE_UINT64; }
 
-  inline H5::PredType operator () (const unsigned long&) const { return H5::PredType::NATIVE_ULONG; }
+//  inline H5::PredType operator () (const unsigned long&) const { return H5::PredType::NATIVE_ULONG; }
 
 
   inline H5::PredType operator () (const float&) const { return H5::PredType::NATIVE_FLOAT; }
