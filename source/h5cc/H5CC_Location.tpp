@@ -39,14 +39,16 @@ TT std::list<std::string> Location<T>::attributes() const
 
 TT bool Location<T>::has_attribute(std::string name) const
 {
+  bool ret {false};
   try
   {
-    return location_.attrExists(name);
+    ret = location_.attrExists(name);
   }
   catch (...)
   {
     Exception::rethrow();
   }
+  return ret;
 }
 
 TT void Location<T>::remove_attribute(std::string name)

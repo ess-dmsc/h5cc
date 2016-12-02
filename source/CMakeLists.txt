@@ -27,5 +27,8 @@ add_executable(h5cc_test ${sources_h5cc_test})
 target_link_libraries(h5cc_test ${HDF5_LIBRARIES})
 
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+
+
 #HACK!! Until H5CC is made better
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-return-type")

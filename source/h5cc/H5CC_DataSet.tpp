@@ -102,17 +102,18 @@ TT std::vector<T> DataSet::read(std::initializer_list<int> slab_size,
 
 TT std::vector<T> DataSet::read() const
 {
+  std::vector<T> data;
   try
   {
-    std::vector<T> data(space_.data_size());
+    data.resize(space_.data_size());
     Location<H5::DataSet>::location_.read(data.data(), type_of(T()),
                                           space_.space());
-    return data;
   }
   catch (...)
   {
     Exception::rethrow();
   }
+  return data;
 }
 
 #undef TT
