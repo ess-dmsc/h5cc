@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 project(H5CCTest CXX)
 
 # Set C++11 flag.
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
 
 find_package(HDF5 COMPONENTS CXX REQUIRED)
 
@@ -27,8 +27,3 @@ add_executable(h5cc_test ${sources_h5cc_test})
 target_link_libraries(h5cc_test ${HDF5_LIBRARIES})
 
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-
-
-#HACK!! Until H5CC is made better
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-return-type")

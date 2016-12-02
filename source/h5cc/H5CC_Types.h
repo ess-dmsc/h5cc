@@ -30,7 +30,10 @@ struct pred_type_visitor
   inline H5::PredType operator () (const double&) const { return H5::PredType::NATIVE_DOUBLE; }
   inline H5::PredType operator () (const long double&) const { return H5::PredType::NATIVE_LDOUBLE; }
 
-  inline H5::StrType operator () (const std::string&) const { return H5::StrType(H5::PredType::C_S1, H5T_VARIABLE); }
+  inline H5::StrType operator () (const std::string&) const
+  {
+    return H5::StrType(H5::PredType::C_S1, H5T_VARIABLE);
+  }
 
   inline H5::EnumType operator () (const bool&) const
   {
