@@ -26,16 +26,12 @@ protected:
   T location_;
   std::string name_;
 
-
   template<typename DT>
   void attr_write(H5::Attribute& attr, DT val);
-
   void attr_write(H5::Attribute& attr, std::string val);
-
 
   template<typename DT>
   void attr_read(const H5::Attribute& attr, DT& val) const;
-
   void attr_read(const H5::Attribute& attr, std::string& val) const;
 };
 

@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
   assert(!dataset.has_attribute("a1"));
 
   dataset.write_attribute("a2", double(1.42));
-  dataset.write_attribute("a3", int64_t(666));
+  dataset.write_attribute("a3", int64_t(-666));
   dataset.write_attribute("a4", std::string("hello"));
   dataset.write_attribute("a5", uint32_t(77));
 

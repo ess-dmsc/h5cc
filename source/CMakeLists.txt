@@ -28,4 +28,4 @@ target_link_libraries(h5cc_test ${HDF5_LIBRARIES})
 
 
 #HACK!! Until H5CC is made better
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-return-type")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-return-type")

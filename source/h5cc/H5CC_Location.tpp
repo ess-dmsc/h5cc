@@ -21,20 +21,20 @@ TT std::string Location<T>::name() const
 
 TT std::list<std::string> Location<T>::attributes() const
 {
+  std::list<std::string> ret;
   try
   {
-    std::list<std::string> ret;
     for (int i=0; i < location_.getNumAttrs(); ++i)
     {
       H5::Attribute attr = location_.openAttribute(i);
       ret.push_back(attr.getName());
     }
-    return ret;
   }
   catch (...)
   {
     Exception::rethrow();
   }
+  return ret;
 }
 
 TT bool Location<T>::has_attribute(std::string name) const
@@ -67,7 +67,7 @@ TT TDT void Location<T>::write_attribute(std::string name, DT val)
     remove_attribute(name);
   try
   {
-    H5::Attribute attribute = location_.createAttribute(name, type_of(DT()), H5::DataSpace (H5S_SCALAR));
+    auto attribute = location_.createAttribute(name, type_of(val), H5::DataSpace(H5S_SCALAR));
     attr_write(attribute, val);
   }
   catch (...)
@@ -78,17 +78,17 @@ TT TDT void Location<T>::write_attribute(std::string name, DT val)
 
 TT TDT DT Location<T>::read_attribute(std::string name) const
 {
+  DT ret;
   try
   {
-    DT ret;
-    H5::Attribute attribute = location_.openAttribute(name);
+    auto attribute = location_.openAttribute(name);
     attr_read(attribute, ret);
-    return ret;
   }
   catch (...)
   {
     Exception::rethrow();
   }
+  return ret;
 }
 
 TT TDT void Location<T>::attr_write(H5::Attribute& attr, DT val)
