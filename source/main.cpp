@@ -45,6 +45,14 @@ int main(int argc, char* argv[])
   dataset.write_attribute("a4", std::string("hello"));
   dataset.write_attribute("a5", uint32_t(77));
 
+  dataset.write_attribute("a6", bool(true));
+  auto a6 = dataset.read_attribute<bool>("a6");
+  assert(a6 == true);
+
+  dataset.write_attribute("a7", bool(false));
+  auto a7 = dataset.read_attribute<bool>("a7");
+  assert(a7 == false);
+
   auto str4 = dataset.read_attribute<std::string>("a4");
   assert(str4 == "hello");
 
