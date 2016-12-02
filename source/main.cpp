@@ -1,6 +1,7 @@
 #include "H5CC_File.h"
 #include "ExceptionUtil.h"
 #include <cassert>
+#include <iostream>
 
 int main(int argc, char* argv[])
 {
@@ -41,8 +42,11 @@ int main(int argc, char* argv[])
 
   dataset.write_attribute("a2", double(1.42));
   dataset.write_attribute("a3", int64_t(666));
-  //dataset.write_attribute("a4", std::string("hello"));  broken!
+  dataset.write_attribute("a4", std::string("hello"));
   dataset.write_attribute("a5", uint32_t(77));
+
+  auto str4 = dataset.read_attribute<std::string>("a4");
+  assert(str4 == "hello");
 
   file.create_group("g1");
   assert(file.has_group("g1"));

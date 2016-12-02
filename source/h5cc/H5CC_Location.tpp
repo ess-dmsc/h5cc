@@ -67,8 +67,8 @@ TT TDT void Location<T>::write_attribute(std::string name, DT val)
     remove_attribute(name);
   try
   {
-    H5::Attribute attribute = location_.createAttribute(name, get_pred_type(DT()), H5::DataSpace (H5S_SCALAR));
-    attribute.write(get_pred_type(DT()), &val );
+    H5::Attribute attribute = location_.createAttribute(name, type_of(DT()), H5::DataSpace (H5S_SCALAR));
+    attr_write(attribute, val);
   }
   catch (...)
   {
@@ -82,7 +82,7 @@ TT TDT DT Location<T>::read_attribute(std::string name) const
   {
     DT ret;
     H5::Attribute attribute = location_.openAttribute(name);
-    attribute.read( get_pred_type(DT()), &ret );
+    attr_read(attribute, ret);
     return ret;
   }
   catch (...)
@@ -90,6 +90,27 @@ TT TDT DT Location<T>::read_attribute(std::string name) const
     Exception::rethrow();
   }
 }
+
+TT TDT void Location<T>::attr_write(H5::Attribute& attr, DT val)
+{
+  attr.write(type_of(val), &val );
+}
+
+TT void Location<T>::attr_write(H5::Attribute& attr, std::string val)
+{
+  attr.write(type_of(val), val );
+}
+
+TT TDT void Location<T>::attr_read(const H5::Attribute& attr, DT& val) const
+{
+  attr.read(type_of(val), &val );
+}
+
+TT void Location<T>::attr_read(const H5::Attribute& attr, std::string& val) const
+{
+  attr.read(type_of(val), val );
+}
+
 
 
 }

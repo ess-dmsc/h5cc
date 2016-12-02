@@ -1,11 +1,15 @@
 #ifndef H5CC_TYPES_H
 #define H5CC_TYPES_H
 
+#include "H5DataType.h"
 #include "H5AtomType.h"
 #include "H5PredType.h"
 #include "H5StrType.h"
 #include <string>
 #include <stdint.h>
+
+namespace H5CC
+{
 
 struct pred_type_visitor
 {
@@ -27,10 +31,12 @@ struct pred_type_visitor
 };
 
 template <typename T>
-inline H5::AtomType get_pred_type(const T& t)
+inline H5::DataType type_of(const T& t)
 {
   pred_type_visitor v;
   return v(t);
+}
+
 }
 
 #endif

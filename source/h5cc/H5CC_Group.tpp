@@ -104,21 +104,21 @@ TT TDT DataSet Groupoid<T>::create_dataset(std::string name,
     
     if (!chunkspace.rank())
         return DataSet(Location<T>::location_.createDataSet(name,
-                       get_pred_type(DT()), Space(dims).space()),
+                       type_of(DT()), Space(dims).space()),
                        name);
                    
     if (!filespace.contains(chunkspace))
         return DataSet(Location<T>::location_.createDataSet(name,
-                       get_pred_type(DT()), Space(dims).space()),
+                       type_of(DT()), Space(dims).space()),
                        name); //throw instead
     
     H5::DSetCreatPropList  plist;
     plist.setChunk(chunkspace.rank(), chunkspace.dims().data());
-    plist.setFillValue(get_pred_type(DT()), 0);
+    plist.setFillValue(type_of(DT()), 0);
     plist.setDeflate(1);
     
     return DataSet(Location<T>::location_.createDataSet(name,
-                   get_pred_type(DT()), Space(dims).space(), plist),
+                   type_of(DT()), Space(dims).space(), plist),
                    name); 
   }
   catch (...)
