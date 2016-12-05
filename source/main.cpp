@@ -10,6 +10,8 @@ int main(int argc, char* argv[])
   std::vector<uint16_t> d {1,2,3,4,5,6,7,8,9};
 //  file.open("f1.h5"); //Broken!
   auto dataset = file.create_dataset<uint16_t>("dset", {3,3});
+  std::cout << dataset.debug() << "\n";
+
   dataset.write(d);
 
   auto d2 = dataset.read<uint16_t>();
@@ -17,7 +19,10 @@ int main(int argc, char* argv[])
   assert(d.size() == d2.size());
   bool same = true;
   for (size_t i=0; i < d.size(); ++i)
+  {
+//    std::cout << i << " = " << d.at(i) << " " << d2.at(i) << "\n";
     same = same && (d.at(i) == d2.at(i));
+  }
   assert(same);
 
   dataset.write_attribute("a1", int(3));
@@ -97,11 +102,15 @@ int main(int argc, char* argv[])
   auto a6 = dataset.read_attribute<bool>("a6");
   assert(a6 == true);
 
+  H5CC::VariantPtr aa6 = dataset.read_variant("a6");
+  std::cout << "aa6 = " << aa6->debug() << "\n";
+
   dataset.write_attribute("a7", bool(false));
   auto a7 = dataset.read_attribute<bool>("a7");
   assert(a7 == false);
 
-
+  H5CC::VariantPtr aa7 = dataset.read_variant("a7");
+  std::cout << "aa7 = " << aa7->debug() << "\n";
 
   auto str4 = dataset.read_attribute<std::string>("a4");
   assert(str4 == "hello");

@@ -1,5 +1,6 @@
 #include "H5CC_Exception.h"
 #include "H5CC_Types.h"
+#include <iostream>
 
 #define TT template<typename T>
 #define TDT template<typename DT>
@@ -102,24 +103,26 @@ TT TDT DataSet Groupoid<T>::create_dataset(std::string name,
   {
     Space filespace(dims);
     Space chunkspace(chunkdims);
+
+//    std::cout << VariantFactory::getInstance().name_of(pred_type_of(DT())) << "\n";
     
     if (!chunkspace.rank())
         return DataSet(Location<T>::location_.createDataSet(name,
-                       type_of(DT()), Space(dims).space()),
+                       pred_type_of(DT()), Space(dims).space()),
                        name);
                    
     if (!filespace.contains(chunkspace))
         return DataSet(Location<T>::location_.createDataSet(name,
-                       type_of(DT()), Space(dims).space()),
+                       pred_type_of(DT()), Space(dims).space()),
                        name); //throw instead
     
     H5::DSetCreatPropList  plist;
     plist.setChunk(chunkspace.rank(), chunkspace.dims().data());
-    plist.setFillValue(type_of(DT()), 0);
+    plist.setFillValue(pred_type_of(DT()), 0);
     plist.setDeflate(1);
     
     ret = DataSet(Location<T>::location_.createDataSet(name,
-                  type_of(DT()), Space(dims).space(), plist),
+                  pred_type_of(DT()), Space(dims).space(), plist),
                   name);
   }
   catch (...)

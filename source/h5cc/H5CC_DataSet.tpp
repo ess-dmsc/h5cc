@@ -12,7 +12,7 @@ TT void DataSet::write(const T& data, std::initializer_list<hsize_t> index)
     auto space = space_;
     space.select_element(index);
     Space dspace({1});
-    Location<H5::DataSet>::location_.write(&data, type_of(T()),
+    Location<H5::DataSet>::location_.write(&data, pred_type_of(T()),
                                            dspace.space(), space.space());
   }
   catch (...)
@@ -27,7 +27,7 @@ TT void DataSet::write(const std::vector<T>& data, Space slab, std::initializer_
   {
     auto space = space_;
     space.select_slab(slab, index);
-    Location<H5::DataSet>::location_.write(data.data(), type_of(T()),
+    Location<H5::DataSet>::location_.write(data.data(), pred_type_of(T()),
                                            slab.space(), space.space());
   }
   catch (...)
@@ -48,7 +48,7 @@ TT void DataSet::write(const std::vector<T>& data)
     throw std::out_of_range("Data size does not match H5::DataSpace size");
   try
   {
-    Location<H5::DataSet>::location_.write(data.data(), type_of(T()), space_.space());
+    Location<H5::DataSet>::location_.write(data.data(), pred_type_of(T()), space_.space());
   }
   catch (...)
   {
@@ -67,7 +67,7 @@ TT T DataSet::read(std::initializer_list<hsize_t> index) const
     auto space = space_;
     space.select_element(index);
     Space dspace({1});
-    Location<H5::DataSet>::location_.read(&data, type_of(T()),
+    Location<H5::DataSet>::location_.read(&data, pred_type_of(T()),
                                           dspace.space(), space.space());
     return data;
   }
@@ -84,7 +84,7 @@ TT std::vector<T> DataSet::read(Space slab, std::initializer_list<hsize_t> index
     auto space = space_;
     space.select_slab(slab, index);
     std::vector<T> data(slab.data_size());
-    Location<H5::DataSet>::location_.read(data.data(), type_of(T()),
+    Location<H5::DataSet>::location_.read(data.data(), pred_type_of(T()),
                                           slab.space(), space.space());
     return data;
   }
@@ -106,7 +106,7 @@ TT std::vector<T> DataSet::read() const
   try
   {
     data.resize(space_.data_size());
-    Location<H5::DataSet>::location_.read(data.data(), type_of(T()),
+    Location<H5::DataSet>::location_.read(data.data(), pred_type_of(T()),
                                           space_.space());
   }
   catch (...)

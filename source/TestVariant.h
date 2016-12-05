@@ -5,7 +5,9 @@
 #include "H5CC_Types.h"
 #include "H5EnumType.h"
 #include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string.hpp>
 #include <map>
+#include <iostream>
 
 namespace H5CC {
 
@@ -16,7 +18,7 @@ public:
   Atomic() {}
   Atomic(T t) : data_(t) {}
 
-  H5::DataType h5_type() const override { return type_of(T()); }
+  H5::DataType h5_type() const override { return pred_type_of(T()); }
 
   std::string type_name() const override
   {
@@ -43,14 +45,15 @@ protected:
   T data_;
 };
 
+template <typename T>
 class Enum : public VariantType
 {
 public:
   Enum() {}
-  Enum(int32_t t, std::map<int32_t, std::string> options) : val_(t), options_(options) {}
+  Enum(T t, std::map<T, std::string> options) : val_(t), options_(options) {}
   Enum(std::initializer_list<std::string> options)
   {
-    int32_t t {0};
+    T t {0};
     for (auto o : options)
     {
       options_[t] = o;
@@ -60,7 +63,7 @@ public:
 
   H5::DataType h5_type() const override
   {
-    H5::EnumType t(H5::PredType::NATIVE_INT32);
+    H5::EnumType t(pred_type_of(T()));
     for (auto i : options_)
     {
       auto v = i.first;
@@ -86,12 +89,11 @@ public:
     options_.clear();
     for (int i=0; i < dtype.getNmembers(); ++i)
     {
-      int32_t t;
+      T t;
       dtype.getMemberValue(i, &t);
-      std::string name = dtype.nameOf(&t, 10);
+      std::string name = dtype.nameOf(&t, 1000);
       options_[t] = name;
     }
-
     attr.read(this->h5_type(), &val_);
   }
 
@@ -105,14 +107,22 @@ public:
     for (auto o : options_)
       opts += o.second + " ";
     if (!opts.empty())
-      ret += "[" + opts + "]";
+      ret += " [" + boost::trim_copy(opts) + "]";
 
     return ret;
   }
 
+  static bool register_type(std::initializer_list<std::string> options)
+  {
+    Enum eee(options);
+    VariantFactory::getInstance().register_type(eee.type_name(), eee.h5_type(),
+                                                []() { return new Enum();});
+    return true;
+  }
+
 protected:
-  int32_t val_;
-  std::map<int32_t, std::string> options_;
+  T val_;
+  std::map<T, std::string> options_;
 };
 
 

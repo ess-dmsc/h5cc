@@ -17,11 +17,7 @@ static VariantRegistrar<Atomic<double>> registrar_double;
 static VariantRegistrar<Atomic<long double>> registrar_long_double;
 
 static VariantRegistrar<String> registrar_string;
-
-//static Enum eee({"False", "True"});
-//VariantFactory::getInstance().register_type(eee.type_name(), eee.h5_type(),
-//                                            []() { return new Enum();});
-
+static bool registrar_enum = Enum<int8_t>::register_type({"False", "True"});
 
 
 }

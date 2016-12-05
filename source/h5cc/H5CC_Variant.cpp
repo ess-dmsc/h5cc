@@ -8,7 +8,12 @@ VariantPtr _VariantFactory_::create(H5::DataType type)
 {
   for (auto t : types_)
     if (t.h5_type == type)
+    {
+//      std::cout << "VariantFactory creating " << t.name << "\n";
       return VariantPtr(t.constructor());
+    }
+
+//  std::cout << "VariantFactory failed to find match\n";
 
   return VariantPtr();
 }
@@ -20,6 +25,14 @@ VariantPtr _VariantFactory_::create(std::string name)
       return VariantPtr(t.constructor());
 
   return VariantPtr();
+}
+
+std::string _VariantFactory_::name_of(H5::DataType type)
+{
+  for (auto t : types_)
+    if (t.h5_type == type)
+      return t.name;
+  return "";
 }
 
 void _VariantFactory_::register_type(std::string name, H5::DataType type,
