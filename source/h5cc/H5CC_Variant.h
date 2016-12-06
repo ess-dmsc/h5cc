@@ -58,9 +58,11 @@ private:
 
 
 public:
-  VariantPtr create(H5::DataType type);
-  VariantPtr create(std::string name);
-  std::string name_of(H5::DataType type);
+  bool has(const H5::DataType& type);
+
+  VariantPtr create(const H5::DataType& type);
+  VariantPtr create(const std::string& name);
+  std::string name_of(const H5::DataType& type);
   void register_type(std::string name, H5::DataType type,
                      std::function<VariantType*(void)> typeConstructor);
   const std::vector<std::string> types();

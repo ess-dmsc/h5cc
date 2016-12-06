@@ -4,7 +4,15 @@
 
 namespace H5CC {
 
-VariantPtr _VariantFactory_::create(H5::DataType type)
+bool _VariantFactory_::has(const H5::DataType& type)
+{
+  for (auto t : types_)
+    if (t.h5_type == type)
+      return true;
+  return false;
+}
+
+VariantPtr _VariantFactory_::create(const H5::DataType& type)
 {
   for (auto t : types_)
     if (t.h5_type == type)
@@ -18,16 +26,15 @@ VariantPtr _VariantFactory_::create(H5::DataType type)
   return VariantPtr();
 }
 
-VariantPtr _VariantFactory_::create(std::string name)
+VariantPtr _VariantFactory_::create(const std::string& name)
 {
   for (auto t : types_)
     if (t.name == name)
       return VariantPtr(t.constructor());
-
   return VariantPtr();
 }
 
-std::string _VariantFactory_::name_of(H5::DataType type)
+std::string _VariantFactory_::name_of(const H5::DataType& type)
 {
   for (auto t : types_)
     if (t.h5_type == type)

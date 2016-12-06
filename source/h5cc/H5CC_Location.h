@@ -23,7 +23,7 @@ public:
   template <typename DT> void write_attribute(std::string name, DT val);
   template <typename DT> DT read_attribute(std::string name) const;
 
-  void write_variant(std::string name, VariantPtr val);
+  void write_variant(std::string name, const VariantType& val);
   VariantPtr read_variant(std::string name) const;
 
 

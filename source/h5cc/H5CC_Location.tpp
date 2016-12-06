@@ -93,16 +93,17 @@ TT TDT DT Location<T>::read_attribute(std::string name) const
   return ret;
 }
 
-TT void Location<T>::write_variant(std::string name, VariantPtr val)
+TT void Location<T>::write_variant(std::string name, const VariantType& val)
 {
-  if (!val)
-    return;
   if (has_attribute(name))
     remove_attribute(name);
   try
   {
-    auto attribute = location_.createAttribute(name, val->h5_type(), H5::DataSpace(H5S_SCALAR));
-    val->write(attribute);
+    auto type = val.h5_type();
+//    if (!VariantFactory::getInstance().has(type))
+//      VariantFactory::getInstance().register_type(val.type_name(), val.h5_type(), )
+    auto attribute = location_.createAttribute(name, type, H5::DataSpace(H5S_SCALAR));
+    val.write(attribute);
   }
   catch (...)
   {
