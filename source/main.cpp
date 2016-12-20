@@ -7,7 +7,44 @@
 
 TEST(FileTests, OpenFileTest) {
   H5CC::File file("f1.h5");
-  ASSERT_EQ(file.is_open(), true);
+  ASSERT_TRUE(file.is_open());
+}
+
+class GroupTests : public ::testing::Test
+{
+public:
+  static void SetUpTestCase()
+  {
+    file.open("f2.h5", H5CC::Access::rw_require);
+  }
+
+  static void TearDownTestCase()
+  {
+    file.close();
+  }
+
+  virtual void SetUp()
+  {
+    file.clear();
+  }
+
+  virtual void TearDown()
+  {}
+
+  static H5CC::File file;
+};
+
+H5CC::File GroupTests::file = H5CC::File();
+
+TEST_F(GroupTests, CreateNewGroupTest)
+{
+  GroupTests::file.create_group("group");
+  ASSERT_TRUE(GroupTests::file.has_group("group"));
+}
+
+TEST_F(GroupTests, HasNonexistentGroup)
+{
+  ASSERT_FALSE(GroupTests::file.has_group("mythical_group"));
 }
 
 //TEST(FileTests, AddHandlerTest) {
@@ -16,8 +53,8 @@ TEST(FileTests, OpenFileTest) {
 
 
 int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }
 
 /*
