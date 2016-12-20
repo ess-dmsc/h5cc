@@ -114,7 +114,7 @@ TT TDT Enum<DT> Location<T>::read_enum(std::string name) const
   try
   {
     auto attribute = location_.openAttribute(name);
-    ret->read(attribute);
+    ret.read(attribute);
   }
   catch (...)
   {

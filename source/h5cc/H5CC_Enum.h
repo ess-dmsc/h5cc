@@ -26,6 +26,17 @@ public:
     }
   }
 
+  void set_option(T t, std::string o)
+  {
+    options_[t] = o;
+  }
+
+  void set_value(T t)
+  {
+    if (options_.count(t))
+      val_ = t;
+  }
+
   H5::DataType h5_type() const
   {
     H5::EnumType t(pred_type_of(T()));
@@ -35,6 +46,11 @@ public:
       t.insert(i.second, &v);
     }
     return t;
+  }
+
+  bool operator == (const Enum& other)
+  {
+    return (options_ == other.options_) && (val_ == other.val_);
   }
 
   void write(H5::Attribute& attr) const

@@ -3,6 +3,25 @@
 #include <cassert>
 #include <iostream>
 
+#include <gtest/gtest.h>
+
+TEST(FileTests, OpenFileTest) {
+  H5CC::File file("f1.h5");
+  ASSERT_EQ(file.is_open(), true);
+}
+
+//TEST(FileTests, AddHandlerTest) {
+//  ASSERT_THROW()
+//}
+
+
+int main(int argc, char **argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}
+
+/*
+
 int main(int argc, char* argv[])
 {
   H5CC::File file("f1.h5");
@@ -60,6 +79,19 @@ int main(int argc, char* argv[])
   auto str4 = dataset.read_attribute<std::string>("a4");
   assert(str4 == "hello");
 
+  H5CC::Enum<int32_t> e1;
+  e1.set_option(0, "zero");
+  e1.set_option(1, "one");
+  e1.set_option(42, "forty-two");
+  e1.set_value(42);
+  std::cout << "e1 = " << e1.to_string() << "\n";
+
+  dataset.write_enum("enum1", e1);
+
+  H5CC::Enum<int32_t> e2 = dataset.read_enum<int32_t>("enum1");
+  std::cout << "e2 = " << e1.to_string() << "\n";
+  assert(e1 == e2);
+
   file.create_group("g1");
   assert(file.has_group("g1"));
   assert(!file.has_group("g2"));
@@ -92,3 +124,5 @@ int main(int argc, char* argv[])
 
   return 0;
 }
+
+*/
