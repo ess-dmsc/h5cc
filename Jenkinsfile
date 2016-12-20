@@ -20,7 +20,9 @@ node {
         }
 
         stage("Run test") {
-            sh "./h5cc_test"
+            sh "./h5cc_test --gtest_output=xml:LogTests.xml"
+            junit '*Tests.xml'
         }
+ 
     }
 }
