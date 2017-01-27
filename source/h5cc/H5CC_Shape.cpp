@@ -2,7 +2,7 @@
 #include "H5CC_Exception.h"
 #include <sstream>
 
-#include <iostream>
+//#include <iostream>
 
 namespace H5CC {
 
@@ -225,9 +225,14 @@ std::string Shape::debug() const
 bool Shape::extendable(const std::vector<hsize_t> dims)
 {
   for (const auto &d : dims)
-    if (d == H5S_UNLIMITED)
+    if (d == kUnlim)
       return true;
   return false;
+}
+
+bool Shape::is_extendable() const
+{
+  return extendable(max_dims_) && can_contain(dims_);
 }
 
 std::string Shape::dims_to_string(const std::vector<hsize_t>& d)
@@ -235,12 +240,12 @@ std::string Shape::dims_to_string(const std::vector<hsize_t>& d)
   if (d.empty())
     return "nullsize";
   std::stringstream ss;
-  if (d.at(0) == H5S_UNLIMITED)
+  if (d.at(0) == kUnlim)
     ss << "U";
   else
     ss << d.at(0);
   for (size_t i=1; i < d.size(); ++i)
-    if (d.at(i) == H5S_UNLIMITED)
+    if (d.at(i) == kUnlim)
       ss << "xU";
     else
       ss << "x" << d.at(i);

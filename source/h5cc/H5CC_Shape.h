@@ -1,7 +1,7 @@
-#ifndef H5CC_SPACE_H
-#define H5CC_SPACE_H
+#ifndef H5CC_SHAPE_H
+#define H5CC_SHAPE_H
 
-#include <H5Cpp.h>
+#include "H5CC_Common.h"
 #include <vector>
 
 namespace H5CC {
@@ -25,6 +25,8 @@ public:
   bool can_contain(const Shape& other) const;
   bool can_contain(const std::vector<hsize_t>& index) const;
   bool can_contain(const Shape& other, const std::vector<hsize_t>& index) const;
+
+  bool is_extendable() const;
 
   void select_slab(const Shape& slabspace, std::vector<hsize_t> index);
   void select_element(std::vector<hsize_t> index);

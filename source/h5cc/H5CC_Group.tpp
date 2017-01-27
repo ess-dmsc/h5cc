@@ -140,8 +140,15 @@ TT TDT DataSet Groupoid<T>::require_dataset(std::string name,
                             std::vector<hsize_t> chunkdims)
 {
   if (has_dataset(name))
+  {
+    auto dset = open_dataset(name);
+    auto shape = dset.shape();
+    if ((shape.is_extendable() == Shape::extendable(dims)) &&
+        (shape.max_shape() == dims) &&
+        (dset.chunk_shape().shape() == chunkdims))
+      return dset;
     remove(name);
-  //if sizes match maybe ok?
+  }
   return create_dataset<DT>(name, dims, chunkdims);
 }
 
