@@ -40,6 +40,8 @@ public:
   bool is_chunked() const;
   Shape chunk_shape() const;
 
+  H5::DataType type() const;
+
   std::string debug() const;
 
 private:

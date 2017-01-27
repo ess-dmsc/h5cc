@@ -31,6 +31,11 @@ Shape DataSet::shape() const
   return shape_;
 }
 
+H5::DataType DataSet::type() const
+{
+  return type_;
+}
+
 bool DataSet::is_chunked() const
 {
   auto prop = Location<H5::DataSet>::location_.getCreatePlist();
