@@ -11,7 +11,7 @@ node {
     dir("build") {
         stage("Run CMake") {
             sh 'rm -rf ./*'
-            sh "HDF5_ROOT=/opt/dm_group/hdf5 \
+            sh "HDF5_ROOT=$HDF5_ROOT \
                 cmake ../code/source"
         }
 
