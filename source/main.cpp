@@ -36,7 +36,7 @@ public:
 
 H5CC::File GroupTests::file = H5CC::File();
 
-TEST_F(GroupTests, CreateNewGroupTest)
+TEST_F(GroupTests, CreateNewGroup)
 {
   GroupTests::file.create_group("group");
   ASSERT_TRUE(GroupTests::file.has_group("group"));
@@ -52,7 +52,61 @@ TEST_F(GroupTests, HasNonexistentGroup)
 //}
 
 
-int main(int argc, char **argv) {
+class DatasetTests : public ::testing::Test
+{
+public:
+  static void SetUpTestCase()
+  {
+    file.open("f3.h5", H5CC::Access::rw_require);
+  }
+
+  static void TearDownTestCase()
+  {
+    file.close();
+  }
+
+  virtual void SetUp()
+  {
+    file.clear();
+  }
+
+  virtual void TearDown()
+  {}
+
+  static H5CC::File file;
+};
+
+H5CC::File DatasetTests::file = H5CC::File();
+
+TEST_F(DatasetTests, CreateSimpleDataset)
+{
+  DatasetTests::file.create_dataset<uint16_t>("simple", {3,3});
+  ASSERT_TRUE(DatasetTests::file.has_dataset("simple"));
+}
+
+TEST_F(DatasetTests, CreateExendableChunckedDataset)
+{
+  DatasetTests::file.create_dataset<uint16_t>("extendable_chunked", {3,H5S_UNLIMITED}, {3,1});
+  ASSERT_TRUE(DatasetTests::file.has_dataset("extendable_chunked"));
+  ASSERT_TRUE(DatasetTests::file.open_dataset("extendable_chunked").is_chunked());
+}
+
+TEST_F(DatasetTests, CreateExendableDataset)
+{
+  DatasetTests::file.create_dataset<uint16_t>("extendable", {3,H5S_UNLIMITED});
+  ASSERT_TRUE(DatasetTests::file.has_dataset("extendable"));
+}
+
+TEST_F(DatasetTests, CreateChunckedDataset)
+{
+  DatasetTests::file.create_dataset<uint16_t>("chunked", {3,3}, {3,1});
+  ASSERT_TRUE(DatasetTests::file.has_dataset("chunked"));
+  ASSERT_TRUE(DatasetTests::file.open_dataset("chunked").is_chunked());
+}
+
+
+int main(int argc, char **argv)
+{
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

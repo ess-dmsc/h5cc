@@ -21,7 +21,8 @@ TT void DataSet::write(const T& data, std::initializer_list<hsize_t> index)
   }
 }
 
-TT void DataSet::write(const std::vector<T>& data, Space slab, std::initializer_list<hsize_t> index)
+TT void DataSet::write(const std::vector<T>& data, Space slab,
+                       std::initializer_list<hsize_t> index)
 {
   try
   {
@@ -37,7 +38,8 @@ TT void DataSet::write(const std::vector<T>& data, Space slab, std::initializer_
 }
 
 TT void DataSet::write(const std::vector<T>& data,
-                       std::initializer_list<int> slab_size, std::initializer_list<hsize_t> index)
+                       std::initializer_list<int> slab_size,
+                       std::initializer_list<hsize_t> index)
 {
   write(data, space_.slab_space(slab_size), index);
 }
@@ -55,8 +57,6 @@ TT void DataSet::write(const std::vector<T>& data)
     Exception::rethrow();
   }
 }
-
-
 
 
 TT T DataSet::read(std::initializer_list<hsize_t> index) const

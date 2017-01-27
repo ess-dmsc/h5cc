@@ -1,6 +1,9 @@
 #include "H5CC_Exception.h"
 #include "H5CC_Types.h"
 #include <iostream>
+#include <vector>
+
+#include <iostream>
 
 #define TT template<typename T>
 #define TDT template<typename DT>
@@ -95,34 +98,39 @@ TT void Groupoid<T>::clear()
 }
 
 TT TDT DataSet Groupoid<T>::create_dataset(std::string name,
-                            std::initializer_list<hsize_t> dims,
-                            std::initializer_list<hsize_t> chunkdims)
+                            std::initializer_list<hsize_t> dimensions,
+                            std::initializer_list<hsize_t> chunk_dimensions)
 {
   DataSet ret;
   try
   {
-    Space filespace(dims);
-    Space chunkspace(chunkdims);
+    std::vector<hsize_t> maxdims(dimensions.begin(), dimensions.end());
+    std::vector<hsize_t> chunkd(chunk_dimensions.begin(), chunk_dimensions.end());
+    bool extendable = false;
+    for (const auto &d : maxdims)
+      if (d == H5S_UNLIMITED)
+      {
+        extendable = true;
+        break;
+      }
 
-//    std::cout << VariantFactory::getInstance().name_of(pred_type_of(DT())) << "\n";
-    
-    if (!chunkspace.rank())
-        return DataSet(Location<T>::location_.createDataSet(name,
-                       pred_type_of(DT()), Space(dims).space()),
-                       name);
-                   
-    if (!filespace.contains(chunkspace))
-        return DataSet(Location<T>::location_.createDataSet(name,
-                       pred_type_of(DT()), Space(dims).space()),
-                       name); //throw instead
-    
+    Space filespace;
+    if (extendable)
+      filespace = Space(chunkd, maxdims);
+    else
+      filespace = Space(maxdims);
+    Space chunkspace(chunkd);
+
     H5::DSetCreatPropList  plist;
-    plist.setChunk(chunkspace.rank(), chunkspace.dims().data());
-    plist.setFillValue(pred_type_of(DT()), 0);
-    plist.setDeflate(1);
+    if (chunkspace.rank() && filespace.contains(chunkspace))
+    {
+      plist.setChunk(chunkspace.rank(), chunkspace.dims().data());
+      plist.setFillValue(pred_type_of(DT()), 0);
+      plist.setDeflate(1);
+    }
     
     ret = DataSet(Location<T>::location_.createDataSet(name,
-                  pred_type_of(DT()), Space(dims).space(), plist),
+                  pred_type_of(DT()), filespace.space(), plist),
                   name);
   }
   catch (...)
@@ -138,6 +146,7 @@ TT TDT DataSet Groupoid<T>::require_dataset(std::string name,
 {
   if (has_dataset(name))
     remove(name);
+  //if sizes match maybe ok?
   return create_dataset<DT>(name, dims, chunkdims);
 }
 

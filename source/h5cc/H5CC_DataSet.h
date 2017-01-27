@@ -26,11 +26,18 @@ public:
                 std::initializer_list<int> slab_size,
                 std::initializer_list<hsize_t> index);
 
+  TT void append(const std::vector<T>& data,
+                 std::initializer_list<int> slab_size,
+                 std::initializer_list<hsize_t> index);
+
+
   TT T read(std::initializer_list<hsize_t> index) const;
   TT std::vector<T> read() const;
   TT std::vector<T> read(std::initializer_list<int> slab_size,
                          std::initializer_list<hsize_t> index) const;
 
+  bool is_chunked() const;
+  Space chunk_space() const;
 
   size_t rank() const;
   hsize_t dim(size_t d) const;

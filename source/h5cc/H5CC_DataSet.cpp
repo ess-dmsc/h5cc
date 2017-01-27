@@ -36,14 +36,33 @@ Space DataSet::slab_space(std::initializer_list<int> list) const
   return space_.slab_space(list);
 }
 
+bool DataSet::is_chunked() const
+{
+  auto prop = Location<H5::DataSet>::location_.getCreatePlist();
+  return (H5D_CHUNKED == prop.getLayout());
+}
+
+
+Space DataSet::chunk_space() const
+{
+  auto prop = Location<H5::DataSet>::location_.getCreatePlist();
+  if (H5D_CHUNKED != prop.getLayout())
+    return Space();
+  std::vector<hsize_t> ret;
+  ret.resize(rank());
+  prop.getChunk(rank(), ret.data());
+  return Space(ret);
+}
+
 std::string DataSet::debug() const
 {
   std::stringstream ss;
   ss << name() << " " << space_.debug()
      << " (" << space_.data_size() << ")";
-//     << VariantFactory::getInstance().name_of(type_);
   return ss.str();
 }
+
+
 
 
 }

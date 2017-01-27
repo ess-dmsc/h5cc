@@ -2,18 +2,22 @@
 #include "H5CC_Exception.h"
 #include <sstream>
 
+#include <iostream>
+
 namespace H5CC {
 
 Space::Space(const H5::DataSpace& sp)
 {
   std::vector<hsize_t> dims;
+  std::vector<hsize_t> max_dims;
   try
   {
     int rank = sp.getSimpleExtentNdims();
     if (rank > 0)
     {
       dims.resize(rank, 0);
-      sp.getSimpleExtentDims(dims.data());
+      max_dims.resize(rank, 0);
+      sp.getSimpleExtentDims(dims.data(), max_dims.data());
     }
   }
   catch (...)
@@ -22,15 +26,29 @@ Space::Space(const H5::DataSpace& sp)
   }
   space_ = sp;
   dims_ = dims;
+  max_dims_ = max_dims;
 }
 
-Space::Space (std::initializer_list<hsize_t> list)
+Space::Space (std::initializer_list<hsize_t> dimensions,
+              std::initializer_list<hsize_t> max_dimensions)
+  : Space(std::vector<hsize_t>(dimensions.begin(), dimensions.end()),
+          std::vector<hsize_t>(max_dimensions.begin(), max_dimensions.end()))
+{}
+
+Space::Space (std::vector<hsize_t> dimensions,
+              std::vector<hsize_t> max_dimensions)
 {
-  std::vector<hsize_t> dims = std::vector<hsize_t>(list.begin(), list.end());
   try
   {
-    space_ = H5::DataSpace(dims.size(), dims.data());
-    dims_ = dims;
+    if (max_dimensions.size() && (max_dimensions.size() == dimensions.size()))
+      space_ = H5::DataSpace(dimensions.size(), dimensions.data(), max_dimensions.data());
+    else
+    {
+      space_ = H5::DataSpace(dimensions.size(), dimensions.data());
+      max_dimensions = dimensions;
+    }
+    dims_ = dimensions;
+    max_dims_ = max_dimensions;
   }
   catch (...)
   {
@@ -47,6 +65,14 @@ hsize_t Space::dim(size_t d) const
 {
   if (d < dims_.size())
     return dims_.at(d);
+  else
+    return 0;
+}
+
+hsize_t Space::max_dim(size_t d) const
+{
+  if (d < max_dims_.size())
+    return max_dims_.at(d);
   else
     return 0;
 }
@@ -158,6 +184,15 @@ std::string Space::debug() const
     ss << dims_.at(0);
   for (size_t i=1; i < dims_.size(); ++i)
     ss << "x" << dims_.at(i);
+  if (max_dims_ != dims_)
+  {
+    ss << " max(";
+    if (max_dims_.size())
+      ss << max_dims_.at(0);
+    for (size_t i=1; i < max_dims_.size(); ++i)
+      ss << "x" << max_dims_.at(i);
+    ss << ") simple?=" << space_.isSimple();
+  }
   return ss.str();
 }
 
