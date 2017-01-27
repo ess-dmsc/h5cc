@@ -1,7 +1,7 @@
 #ifndef H5CC_DATASET_H
 #define H5CC_DATASET_H
 
-#include "H5CC_Space.h"
+#include "H5CC_Shape.h"
 #include "H5CC_Location.h"
 #include <vector>
 
@@ -13,7 +13,7 @@ namespace H5CC {
 class DataSet : public Location<H5::DataSet>
 {
 private:
-  Space space_;
+  Shape shape_;
   H5::DataType type_ { H5T_NO_CLASS };
 
 public:
@@ -36,19 +36,17 @@ public:
   TT std::vector<T> read(std::initializer_list<int> slab_size,
                          std::initializer_list<hsize_t> index) const;
 
+  Shape shape() const;
   bool is_chunked() const;
-  Space chunk_space() const;
-
-  size_t rank() const;
-  hsize_t dim(size_t d) const;
+  Shape chunk_shape() const;
 
   std::string debug() const;
 
 private:
-  TT void write(const std::vector<T>& data, Space slab, std::initializer_list<hsize_t> index);
-  TT std::vector<T> read(Space slab, std::initializer_list<hsize_t> index) const;
+  TT void write(const std::vector<T>& data, Shape slab, std::initializer_list<hsize_t> index);
+  TT std::vector<T> read(Shape slab, std::initializer_list<hsize_t> index) const;
 
-  Space slab_space(std::initializer_list<int> list) const;
+  Shape slab_shape(std::initializer_list<int> list) const;
 };
 
 }

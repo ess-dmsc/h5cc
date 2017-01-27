@@ -114,23 +114,23 @@ TT TDT DataSet Groupoid<T>::create_dataset(std::string name,
         break;
       }
 
-    Space filespace;
+    Shape filespace;
     if (extendable)
-      filespace = Space(chunkd, maxdims);
+      filespace = Shape(chunkd, maxdims);
     else
-      filespace = Space(maxdims);
-    Space chunkspace(chunkd);
+      filespace = Shape(maxdims);
+    Shape chunkspace(chunkd);
 
     H5::DSetCreatPropList  plist;
     if (chunkspace.rank() && filespace.contains(chunkspace))
     {
-      plist.setChunk(chunkspace.rank(), chunkspace.dims().data());
+      plist.setChunk(chunkspace.rank(), chunkspace.shape().data());
       plist.setFillValue(pred_type_of(DT()), 0);
       plist.setDeflate(1);
     }
     
     ret = DataSet(Location<T>::location_.createDataSet(name,
-                  pred_type_of(DT()), filespace.space(), plist),
+                  pred_type_of(DT()), filespace.dataspace(), plist),
                   name);
   }
   catch (...)

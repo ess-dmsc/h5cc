@@ -9,11 +9,11 @@ TT void DataSet::write(const T& data, std::initializer_list<hsize_t> index)
 {
   try
   {
-    auto space = space_;
+    auto space = shape_;
     space.select_element(index);
-    Space dspace({1});
+    Shape dspace({1});
     Location<H5::DataSet>::location_.write(&data, pred_type_of(T()),
-                                           dspace.space(), space.space());
+                                           dspace.dataspace(), space.dataspace());
   }
   catch (...)
   {
@@ -21,26 +21,26 @@ TT void DataSet::write(const T& data, std::initializer_list<hsize_t> index)
   }
 }
 
-TT void DataSet::write(const std::vector<T>& data, Space slab,
+TT void DataSet::write(const std::vector<T>& data, Shape slab,
                        std::initializer_list<hsize_t> index)
 {
   try
   {
-    auto space = space_;
+    auto space = shape_;
     if (space.contains(slab, index))
       space.select_slab(slab, index);
     else if (space.can_contain(slab, index))
     {
       std::vector<hsize_t> start(index.begin(), index.end());
       std::vector<hsize_t> newsize;
-      for (size_t i=0; i < rank(); ++i)
-        newsize.push_back(std::max(dim(i), slab.dim(i) + start.at(i)));
+      for (size_t i=0; i < shape_.rank(); ++i)
+        newsize.push_back(std::max(shape_.dim(i), slab.dim(i) + start.at(i)));
       Location<H5::DataSet>::location_.extend(newsize.data());
     }
     else
       throw std::out_of_range("slab selection out of data space range");
     Location<H5::DataSet>::location_.write(data.data(), pred_type_of(T()),
-                                           slab.space(), space.space());
+                                           slab.dataspace(), space.dataspace());
   }
   catch (...)
   {
@@ -52,16 +52,16 @@ TT void DataSet::write(const std::vector<T>& data,
                        std::initializer_list<int> slab_size,
                        std::initializer_list<hsize_t> index)
 {
-  write(data, space_.slab_space(slab_size), index);
+  write(data, shape_.slab_shape(slab_size), index);
 }
 
 TT void DataSet::write(const std::vector<T>& data)
 {
-  if (data.size() != space_.data_size())
+  if (data.size() != shape_.data_size())
     throw std::out_of_range("Data size does not match H5::DataSpace size");
   try
   {
-    Location<H5::DataSet>::location_.write(data.data(), pred_type_of(T()), space_.space());
+    Location<H5::DataSet>::location_.write(data.data(), pred_type_of(T()), shape_.dataspace());
   }
   catch (...)
   {
@@ -75,11 +75,11 @@ TT T DataSet::read(std::initializer_list<hsize_t> index) const
   try
   {
     T data;
-    auto space = space_;
+    auto space = shape_;
     space.select_element(index);
-    Space dspace({1});
+    Shape dspace({1});
     Location<H5::DataSet>::location_.read(&data, pred_type_of(T()),
-                                          dspace.space(), space.space());
+                                          dspace.dataspace(), space.dataspace());
     return data;
   }
   catch (...)
@@ -88,15 +88,15 @@ TT T DataSet::read(std::initializer_list<hsize_t> index) const
   }
 }
 
-TT std::vector<T> DataSet::read(Space slab, std::initializer_list<hsize_t> index) const
+TT std::vector<T> DataSet::read(Shape slab, std::initializer_list<hsize_t> index) const
 {
   try
   {
-    auto space = space_;
+    auto space = shape_;
     space.select_slab(slab, index);
     std::vector<T> data(slab.data_size());
     Location<H5::DataSet>::location_.read(data.data(), pred_type_of(T()),
-                                          slab.space(), space.space());
+                                          slab.dataspace(), space.dataspace());
     return data;
   }
   catch (...)
@@ -108,7 +108,7 @@ TT std::vector<T> DataSet::read(Space slab, std::initializer_list<hsize_t> index
 TT std::vector<T> DataSet::read(std::initializer_list<int> slab_size,
                                 std::initializer_list<hsize_t> index) const
 {
-  return read<T>(space_.slab_space(slab_size), index);
+  return read<T>(shape_.slab_shape(slab_size), index);
 }
 
 TT std::vector<T> DataSet::read() const
@@ -116,9 +116,9 @@ TT std::vector<T> DataSet::read() const
   std::vector<T> data;
   try
   {
-    data.resize(space_.data_size());
+    data.resize(shape_.data_size());
     Location<H5::DataSet>::location_.read(data.data(), pred_type_of(T()),
-                                          space_.space());
+                                          shape_.dataspace());
   }
   catch (...)
   {

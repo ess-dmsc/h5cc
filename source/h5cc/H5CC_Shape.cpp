@@ -1,4 +1,4 @@
-#include "H5CC_Space.h"
+#include "H5CC_Shape.h"
 #include "H5CC_Exception.h"
 #include <sstream>
 
@@ -6,7 +6,7 @@
 
 namespace H5CC {
 
-Space::Space(const H5::DataSpace& sp)
+Shape::Shape(const H5::DataSpace& sp)
 {
   std::vector<hsize_t> dims;
   std::vector<hsize_t> max_dims;
@@ -24,27 +24,27 @@ Space::Space(const H5::DataSpace& sp)
   {
     Exception::rethrow();
   }
-  space_ = sp;
+  dataspace_ = sp;
   dims_ = dims;
   max_dims_ = max_dims;
 }
 
-Space::Space (std::initializer_list<hsize_t> dimensions,
+Shape::Shape (std::initializer_list<hsize_t> dimensions,
               std::initializer_list<hsize_t> max_dimensions)
-  : Space(std::vector<hsize_t>(dimensions.begin(), dimensions.end()),
+  : Shape(std::vector<hsize_t>(dimensions.begin(), dimensions.end()),
           std::vector<hsize_t>(max_dimensions.begin(), max_dimensions.end()))
 {}
 
-Space::Space (std::vector<hsize_t> dimensions,
+Shape::Shape (std::vector<hsize_t> dimensions,
               std::vector<hsize_t> max_dimensions)
 {
   try
   {
     if (max_dimensions.size() && (max_dimensions.size() == dimensions.size()))
-      space_ = H5::DataSpace(dimensions.size(), dimensions.data(), max_dimensions.data());
+      dataspace_ = H5::DataSpace(dimensions.size(), dimensions.data(), max_dimensions.data());
     else
     {
-      space_ = H5::DataSpace(dimensions.size(), dimensions.data());
+      dataspace_ = H5::DataSpace(dimensions.size(), dimensions.data());
       max_dimensions = dimensions;
     }
     dims_ = dimensions;
@@ -56,12 +56,12 @@ Space::Space (std::vector<hsize_t> dimensions,
   }
 }
 
-size_t Space::rank() const
+size_t Shape::rank() const
 {
   return dims_.size();
 }
 
-hsize_t Space::dim(size_t d) const
+hsize_t Shape::dim(size_t d) const
 {
   if (d < dims_.size())
     return dims_.at(d);
@@ -69,7 +69,7 @@ hsize_t Space::dim(size_t d) const
     return 0;
 }
 
-hsize_t Space::max_dim(size_t d) const
+hsize_t Shape::max_dim(size_t d) const
 {
   if (d < max_dims_.size())
     return max_dims_.at(d);
@@ -77,9 +77,9 @@ hsize_t Space::max_dim(size_t d) const
     return 0;
 }
 
-Space Space::slab_space(std::initializer_list<int> list) const
+Shape Shape::slab_shape(std::initializer_list<int> list) const
 {
-  Space ret;
+  Shape ret;
   if (list.size() <= dims_.size())
   {
     auto newdims = dims_;
@@ -93,7 +93,7 @@ Space Space::slab_space(std::initializer_list<int> list) const
 
     try
     {
-      ret.space_ = H5::DataSpace(newdims.size(), newdims.data());
+      ret.dataspace_ = H5::DataSpace(newdims.size(), newdims.data());
     }
     catch (...)
     {
@@ -105,7 +105,7 @@ Space Space::slab_space(std::initializer_list<int> list) const
   return ret;
 }
 
-size_t Space::data_size() const
+size_t Shape::data_size() const
 {
   if (!rank())
     return 0;
@@ -115,7 +115,7 @@ size_t Space::data_size() const
   return ret;
 }
 
-bool Space::contains(const Space& other) const
+bool Shape::contains(const Shape& other) const
 {
   if (other.dims_.empty() || (dims_.size() != other.dims_.size()))
     return false;
@@ -125,7 +125,7 @@ bool Space::contains(const Space& other) const
   return true;
 }
 
-bool Space::contains(const std::vector<hsize_t>& index) const
+bool Shape::contains(const std::vector<hsize_t>& index) const
 {
   if (index.empty() || (dims_.size() != index.size()))
     return false;
@@ -135,7 +135,7 @@ bool Space::contains(const std::vector<hsize_t>& index) const
   return true;
 }
 
-bool Space::contains(const Space& other, const std::vector<hsize_t>& index) const
+bool Shape::contains(const Shape& other, const std::vector<hsize_t>& index) const
 {
   if (!contains(index))
     return false;
@@ -147,7 +147,7 @@ bool Space::contains(const Space& other, const std::vector<hsize_t>& index) cons
   return true;
 }
 
-bool Space::can_contain(const Space& other) const
+bool Shape::can_contain(const Shape& other) const
 {
   if (other.dims_.empty() || (max_dims_.size() != other.dims_.size()))
     return false;
@@ -157,7 +157,7 @@ bool Space::can_contain(const Space& other) const
   return true;
 }
 
-bool Space::can_contain(const std::vector<hsize_t>& index) const
+bool Shape::can_contain(const std::vector<hsize_t>& index) const
 {
   if (index.empty() || (max_dims_.size() != index.size()))
     return false;
@@ -167,7 +167,7 @@ bool Space::can_contain(const std::vector<hsize_t>& index) const
   return true;
 }
 
-bool Space::can_contain(const Space& other, const std::vector<hsize_t>& index) const
+bool Shape::can_contain(const Shape& other, const std::vector<hsize_t>& index) const
 {
   if (!can_contain(index))
     return false;
@@ -179,14 +179,14 @@ bool Space::can_contain(const Space& other, const std::vector<hsize_t>& index) c
   return true;
 }
 
-void Space::select_slab(const Space& slabspace, std::initializer_list<hsize_t> index)
+void Shape::select_slab(const Shape& slabspace, std::initializer_list<hsize_t> index)
 {
   std::vector<hsize_t> choice(index.begin(), index.end());
   if (!contains(slabspace, choice))
-    throw std::out_of_range("slab selection out of data space range");
+    throw std::out_of_range("slab selection out of data shape range");
   try
   {
-    space_.selectHyperslab(H5S_SELECT_SET, slabspace.dims_.data(), choice.data());
+    dataspace_.selectHyperslab(H5S_SELECT_SET, slabspace.dims_.data(), choice.data());
   }
   catch (...)
   {
@@ -194,14 +194,14 @@ void Space::select_slab(const Space& slabspace, std::initializer_list<hsize_t> i
   }
 }
 
-void Space::select_element(std::initializer_list<hsize_t> index)
+void Shape::select_element(std::initializer_list<hsize_t> index)
 {
   std::vector<hsize_t> choice(index.begin(), index.end());
   if (!contains(choice))
-    throw std::out_of_range("element selection out of data space range");
+    throw std::out_of_range("element selection out of data shape range");
   try
   {
-    space_.selectElements(H5S_SELECT_SET, 1, choice.data());
+    dataspace_.selectElements(H5S_SELECT_SET, 1, choice.data());
   }
   catch (...)
   {
@@ -209,7 +209,7 @@ void Space::select_element(std::initializer_list<hsize_t> index)
   }
 }
 
-std::string Space::debug() const
+std::string Shape::debug() const
 {
   std::stringstream ss;
   ss << dims_to_string(dims_);
@@ -217,12 +217,12 @@ std::string Space::debug() const
   {
     ss << " max(" << dims_to_string(max_dims_) << ")";
   }
-  if (!space_.isSimple())
+  if (!dataspace_.isSimple())
     ss << " nonsimple";
   return ss.str();
 }
 
-std::string Space::dims_to_string(const std::vector<hsize_t>& d)
+std::string Shape::dims_to_string(const std::vector<hsize_t>& d)
 {
   if (d.empty())
     return "nullsize";
