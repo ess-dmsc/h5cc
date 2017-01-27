@@ -27,7 +27,18 @@ TT void DataSet::write(const std::vector<T>& data, Space slab,
   try
   {
     auto space = space_;
-    space.select_slab(slab, index);
+    if (space.contains(slab, index))
+      space.select_slab(slab, index);
+    else if (space.can_contain(slab, index))
+    {
+      std::vector<hsize_t> start(index.begin(), index.end());
+      std::vector<hsize_t> newsize;
+      for (size_t i=0; i < rank(); ++i)
+        newsize.push_back(std::max(dim(i), slab.dim(i) + start.at(i)));
+      Location<H5::DataSet>::location_.extend(newsize.data());
+    }
+    else
+      throw std::out_of_range("slab selection out of data space range");
     Location<H5::DataSet>::location_.write(data.data(), pred_type_of(T()),
                                            slab.space(), space.space());
   }

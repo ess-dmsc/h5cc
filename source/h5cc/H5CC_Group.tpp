@@ -160,6 +160,7 @@ TT DataSet Groupoid<T>::open_dataset(std::string name) const
   {
     Exception::rethrow();
   }
+  return DataSet();
 }
 
 TT Groupoid<H5::Group> Groupoid<T>::require_group(std::string name)

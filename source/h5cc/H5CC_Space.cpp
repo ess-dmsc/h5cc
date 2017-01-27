@@ -147,6 +147,38 @@ bool Space::contains(const Space& other, const std::vector<hsize_t>& index) cons
   return true;
 }
 
+bool Space::can_contain(const Space& other) const
+{
+  if (other.dims_.empty() || (max_dims_.size() != other.dims_.size()))
+    return false;
+  for (size_t i=0; i < max_dims_.size(); ++i)
+    if ((other.dims_.at(i) < 1) || (other.dims_.at(i) > max_dims_.at(i)))
+      return false;
+  return true;
+}
+
+bool Space::can_contain(const std::vector<hsize_t>& index) const
+{
+  if (index.empty() || (max_dims_.size() != index.size()))
+    return false;
+  for (size_t i=0; i < max_dims_.size(); ++i)
+    if (index.at(i) >= max_dims_.at(i))
+      return false;
+  return true;
+}
+
+bool Space::can_contain(const Space& other, const std::vector<hsize_t>& index) const
+{
+  if (!can_contain(index))
+    return false;
+  if (!can_contain(other))
+    return false;
+  for (size_t i=0; i < max_dims_.size(); ++i)
+    if ((other.dims_.at(i) + index.at(i)) > max_dims_.at(i))
+      return false;
+  return true;
+}
+
 void Space::select_slab(const Space& slabspace, std::initializer_list<hsize_t> index)
 {
   std::vector<hsize_t> choice(index.begin(), index.end());
@@ -180,20 +212,32 @@ void Space::select_element(std::initializer_list<hsize_t> index)
 std::string Space::debug() const
 {
   std::stringstream ss;
-  if (dims_.size())
-    ss << dims_.at(0);
-  for (size_t i=1; i < dims_.size(); ++i)
-    ss << "x" << dims_.at(i);
-  if (max_dims_ != dims_)
+  ss << dims_to_string(dims_);
+  if (!max_dims_.empty() && (max_dims_ != dims_))
   {
-    ss << " max(";
-    if (max_dims_.size())
-      ss << max_dims_.at(0);
-    for (size_t i=1; i < max_dims_.size(); ++i)
-      ss << "x" << max_dims_.at(i);
-    ss << ") simple?=" << space_.isSimple();
+    ss << " max(" << dims_to_string(max_dims_) << ")";
   }
+  if (!space_.isSimple())
+    ss << " nonsimple";
   return ss.str();
 }
+
+std::string Space::dims_to_string(const std::vector<hsize_t>& d)
+{
+  if (d.empty())
+    return "nullsize";
+  std::stringstream ss;
+  if (d.at(0) == H5S_UNLIMITED)
+    ss << "U";
+  else
+    ss << d.at(0);
+  for (size_t i=1; i < d.size(); ++i)
+    if (d.at(i) == H5S_UNLIMITED)
+      ss << "xU";
+    else
+      ss << "x" << d.at(i);
+  return ss.str();
+}
+
 
 }

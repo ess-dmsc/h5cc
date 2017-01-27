@@ -22,6 +22,11 @@ public:
   bool contains(const Space& other) const;
   bool contains(const std::vector<hsize_t>& index) const;
   bool contains(const Space& other, const std::vector<hsize_t>& index) const;
+
+  bool can_contain(const Space& other) const;
+  bool can_contain(const std::vector<hsize_t>& index) const;
+  bool can_contain(const Space& other, const std::vector<hsize_t>& index) const;
+
   void select_slab(const Space& slabspace, std::initializer_list<hsize_t> index);
   void select_element(std::initializer_list<hsize_t> index);
 
@@ -38,6 +43,8 @@ private:
   H5::DataSpace space_;
   std::vector<hsize_t> dims_;
   std::vector<hsize_t> max_dims_;
+
+  static std::string dims_to_string(const std::vector<hsize_t>& d);
 };
 
 }
