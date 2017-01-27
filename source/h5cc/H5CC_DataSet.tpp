@@ -36,6 +36,8 @@ TT void DataSet::write(const std::vector<T>& data, Shape slab,
       for (size_t i=0; i < shape_.rank(); ++i)
         newsize.push_back(std::max(shape_.dim(i), slab.dim(i) + start.at(i)));
       Location<H5::DataSet>::location_.extend(newsize.data());
+      space = shape_ = Shape(Location<H5::DataSet>::location_.getSpace());
+      space.select_slab(slab, index);
     }
     else
       throw std::out_of_range("slab selection out of data space range");

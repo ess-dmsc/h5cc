@@ -84,6 +84,20 @@ TEST_F(DatasetTests, CreateSimpleDataset)
   ASSERT_TRUE(DatasetTests::file.has_dataset("simple"));
 }
 
+TEST_F(DatasetTests, CreateChunckedDataset)
+{
+  DatasetTests::file.create_dataset<uint16_t>("chunked", {3,3}, {3,1});
+  ASSERT_TRUE(DatasetTests::file.has_dataset("chunked"));
+  ASSERT_TRUE(DatasetTests::file.open_dataset("chunked").is_chunked());
+}
+
+TEST_F(DatasetTests, CreateExendableDataset)
+{
+  DatasetTests::file.create_dataset<uint16_t>("extendable", {3,H5S_UNLIMITED});
+  ASSERT_TRUE(DatasetTests::file.has_dataset("extendable"));
+  //should fail!
+}
+
 TEST_F(DatasetTests, CreateExendableChunckedDataset)
 {
   DatasetTests::file.create_dataset<uint16_t>("extendable_chunked", {3,H5S_UNLIMITED}, {3,1});
@@ -94,21 +108,6 @@ TEST_F(DatasetTests, CreateExendableChunckedDataset)
   DatasetTests::file.open_dataset("extendable_chunked").write(data, {3,1}, {0,7});
   std::cout << "after:  " << DatasetTests::file.open_dataset("extendable_chunked").debug() << "\n";
 }
-
-TEST_F(DatasetTests, CreateExendableDataset)
-{
-  DatasetTests::file.create_dataset<uint16_t>("extendable", {3,H5S_UNLIMITED});
-  ASSERT_TRUE(DatasetTests::file.has_dataset("extendable"));
-  //should fail!
-}
-
-TEST_F(DatasetTests, CreateChunckedDataset)
-{
-  DatasetTests::file.create_dataset<uint16_t>("chunked", {3,3}, {3,1});
-  ASSERT_TRUE(DatasetTests::file.has_dataset("chunked"));
-  ASSERT_TRUE(DatasetTests::file.open_dataset("chunked").is_chunked());
-}
-
 
 int main(int argc, char **argv)
 {
