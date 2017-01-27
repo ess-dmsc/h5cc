@@ -47,7 +47,7 @@ TT void DataSet::write(const std::vector<T>& data, Shape slab,
 }
 
 TT void DataSet::write(const std::vector<T>& data,
-                       std::vector<int> slab_size,
+                       std::vector<hsize_t> slab_size,
                        std::vector<hsize_t> index)
 {
   write(data, shape_.slab_shape(slab_size), index);
@@ -103,7 +103,7 @@ TT std::vector<T> DataSet::read(Shape slab, std::vector<hsize_t> index) const
   }
 }
 
-TT std::vector<T> DataSet::read(std::vector<int> slab_size,
+TT std::vector<T> DataSet::read(std::vector<hsize_t> slab_size,
                                 std::vector<hsize_t> index) const
 {
   return read<T>(shape_.slab_shape(slab_size), index);

@@ -14,17 +14,15 @@ public:
   Shape(std::vector<hsize_t> dimensions,
         std::vector<hsize_t> max_dimensions = {});
 
-  Shape slab_shape(std::vector<int> list) const;
+  Shape slab_shape(std::vector<hsize_t> list) const;
   std::vector<hsize_t> max_extent(const Shape& slab, std::vector<hsize_t> index) const;
   size_t data_size() const;
 
   bool contains(const Shape& other) const;
-  bool contains(const std::vector<hsize_t>& index) const;
-  bool contains(const Shape& other, const std::vector<hsize_t>& index) const;
+  bool contains(const Shape& other, const std::vector<hsize_t>& coords) const;
 
   bool can_contain(const Shape& other) const;
-  bool can_contain(const std::vector<hsize_t>& index) const;
-  bool can_contain(const Shape& other, const std::vector<hsize_t>& index) const;
+  bool can_contain(const Shape& other, const std::vector<hsize_t>& coords) const;
 
   bool is_extendable() const;
 
@@ -44,6 +42,11 @@ public:
   std::string debug() const;
   static std::string dims_to_string(const std::vector<hsize_t>& d);
   static bool extendable(const std::vector<hsize_t>);
+  static bool fits_space(const std::vector<hsize_t> superset,
+                         const std::vector<hsize_t> subset);
+  static bool fits_slab(const std::vector<hsize_t> superset,
+                        const std::vector<hsize_t> coords,
+                        const std::vector<hsize_t> subset);
 
 private:
   H5::DataSpace dataspace_;

@@ -93,12 +93,12 @@ TEST_F(DatasetTests, CreateChunckedDataset)
 
 TEST_F(DatasetTests, CreateExendableDataset)
 {
-  ASSERT_ANY_THROW(DatasetTests::file.create_dataset<uint16_t>("data", {3,H5CC::kUnlim}));
+  ASSERT_ANY_THROW(DatasetTests::file.create_dataset<uint16_t>("data", {3,H5CC::kMax}));
 }
 
 TEST_F(DatasetTests, CreateExendableChunckedDataset)
 {
-  DatasetTests::file.create_dataset<uint16_t>("data", {3,H5CC::kUnlim}, {3,1});
+  DatasetTests::file.create_dataset<uint16_t>("data", {3,H5CC::kMax}, {3,1});
   ASSERT_TRUE(DatasetTests::file.has_dataset("data"));
   ASSERT_TRUE(DatasetTests::file.open_dataset("data").is_chunked());
 //  std::cout << "before: " << DatasetTests::file.open_dataset("data").debug() << "\n";

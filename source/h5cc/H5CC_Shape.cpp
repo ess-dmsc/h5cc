@@ -71,7 +71,7 @@ hsize_t Shape::max_dim(size_t d) const
     return 0;
 }
 
-Shape Shape::slab_shape(std::vector<int> list) const
+Shape Shape::slab_shape(std::vector<hsize_t> list) const
 {
   Shape ret;
   if (list.size() <= dims_.size())
@@ -80,7 +80,7 @@ Shape Shape::slab_shape(std::vector<int> list) const
     int i=0;
     for (auto &d : list)
     {
-      if ((d >= 0) && (d < int(dims_[i])))
+      if ((d != kMax) && (d < dims_[i]))
         newdims[i] = d;
       i++;
     }
@@ -117,68 +117,49 @@ size_t Shape::data_size() const
   return ret;
 }
 
+bool Shape::fits_space(const std::vector<hsize_t> superset,
+                       const std::vector<hsize_t> subset)
+{
+  if (subset.empty() || (superset.size() != subset.size()))
+    return false;
+  for (size_t i=0; i < subset.size(); ++i)
+    if (subset.at(i) > superset.at(i))
+      return false;
+  return true;
+}
+
+bool Shape::fits_slab(const std::vector<hsize_t> superset,
+                      const std::vector<hsize_t> coords,
+                      const std::vector<hsize_t> subset)
+{
+  if (subset.empty() ||
+      (superset.size() != subset.size()) ||
+      (coords.size() != subset.size()))
+    return false;
+  for (size_t i=0; i < subset.size(); ++i)
+    if ((coords.at(i) + subset.at(i)) > superset.at(i))
+      return false;
+  return true;
+}
+
 bool Shape::contains(const Shape& other) const
 {
-  if (other.dims_.empty() || (dims_.size() != other.dims_.size()))
-    return false;
-  for (size_t i=0; i < dims_.size(); ++i)
-    if ((other.dims_.at(i) < 1) || (other.dims_.at(i) > dims_.at(i)))
-      return false;
-  return true;
+  return fits_space(dims_, other.dims_);
 }
 
-bool Shape::contains(const std::vector<hsize_t>& index) const
+bool Shape::contains(const Shape& other, const std::vector<hsize_t>& coords) const
 {
-  if (index.empty() || (dims_.size() != index.size()))
-    return false;
-  for (size_t i=0; i < dims_.size(); ++i)
-    if (index.at(i) >= dims_.at(i))
-      return false;
-  return true;
-}
-
-bool Shape::contains(const Shape& other, const std::vector<hsize_t>& index) const
-{
-  if (!contains(index))
-    return false;
-  if (!contains(other))
-    return false;
-  for (size_t i=0; i < dims_.size(); ++i)
-    if ((other.dims_.at(i) + index.at(i)) > dims_.at(i))
-      return false;
-  return true;
+  return fits_slab(dims_, coords, other.dims_);
 }
 
 bool Shape::can_contain(const Shape& other) const
 {
-  if (other.dims_.empty() || (max_dims_.size() != other.dims_.size()))
-    return false;
-  for (size_t i=0; i < max_dims_.size(); ++i)
-    if ((other.dims_.at(i) < 1) || (other.dims_.at(i) > max_dims_.at(i)))
-      return false;
-  return true;
+  return fits_space(max_dims_, other.dims_);
 }
 
-bool Shape::can_contain(const std::vector<hsize_t>& index) const
+bool Shape::can_contain(const Shape& other, const std::vector<hsize_t>& coords) const
 {
-  if (index.empty() || (max_dims_.size() != index.size()))
-    return false;
-  for (size_t i=0; i < max_dims_.size(); ++i)
-    if (index.at(i) >= max_dims_.at(i))
-      return false;
-  return true;
-}
-
-bool Shape::can_contain(const Shape& other, const std::vector<hsize_t>& index) const
-{
-  if (!can_contain(index))
-    return false;
-  if (!can_contain(other))
-    return false;
-  for (size_t i=0; i < max_dims_.size(); ++i)
-    if ((other.dims_.at(i) + index.at(i)) > max_dims_.at(i))
-      return false;
-  return true;
+  return fits_slab(max_dims_, coords, other.dims_);
 }
 
 void Shape::select_slab(const Shape& slabspace, std::vector<hsize_t> index)
@@ -225,7 +206,7 @@ std::string Shape::debug() const
 bool Shape::extendable(const std::vector<hsize_t> dims)
 {
   for (const auto &d : dims)
-    if (d == kUnlim)
+    if (d == kMax)
       return true;
   return false;
 }
@@ -240,12 +221,12 @@ std::string Shape::dims_to_string(const std::vector<hsize_t>& d)
   if (d.empty())
     return "nullsize";
   std::stringstream ss;
-  if (d.at(0) == kUnlim)
+  if (d.at(0) == kMax)
     ss << "U";
   else
     ss << d.at(0);
   for (size_t i=1; i < d.size(); ++i)
-    if (d.at(i) == kUnlim)
+    if (d.at(i) == kMax)
       ss << "xU";
     else
       ss << "x" << d.at(i);

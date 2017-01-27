@@ -5,8 +5,7 @@
 
 namespace H5CC {
 
-  const hsize_t kMax = -1;
-  const hsize_t kUnlim = H5S_UNLIMITED;
+  const hsize_t kMax = H5S_UNLIMITED;
 
 }
 
