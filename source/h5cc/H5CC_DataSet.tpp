@@ -11,7 +11,7 @@ TT void DataSet::write(const T& data, std::vector<hsize_t> index)
   {
     auto shape = shape_;
     shape.select_element(index);
-    Shape dspace({1});
+    Shape dspace(std::vector<hsize_t>({1}));
     Location<H5::DataSet>::location_.write(&data, pred_type_of(T()),
                                            dspace.dataspace(), shape.dataspace());
   }
@@ -75,7 +75,7 @@ TT T DataSet::read(std::vector<hsize_t> index) const
     T data;
     auto shape = shape_;
     shape.select_element(index);
-    Shape dspace({1});
+    Shape dspace(std::vector<hsize_t>({1}));
     Location<H5::DataSet>::location_.read(&data, pred_type_of(T()),
                                           dspace.dataspace(), shape.dataspace());
     return data;
