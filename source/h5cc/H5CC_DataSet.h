@@ -20,21 +20,21 @@ public:
   DataSet();
   DataSet(H5::DataSet ds, std::string name);
 
-  TT void write(const T& data, std::initializer_list<hsize_t> index);
+  TT void write(const T& data, std::vector<hsize_t> index);
   TT void write(const std::vector<T>& data);
   TT void write(const std::vector<T>& data,
-                std::initializer_list<int> slab_size,
-                std::initializer_list<hsize_t> index);
+                std::vector<int> slab_size,
+                std::vector<hsize_t> index);
 
   TT void append(const std::vector<T>& data,
-                 std::initializer_list<int> slab_size,
-                 std::initializer_list<hsize_t> index);
+                 std::vector<int> slab_size,
+                 std::vector<hsize_t> index);
 
 
-  TT T read(std::initializer_list<hsize_t> index) const;
+  TT T read(std::vector<hsize_t> index) const;
   TT std::vector<T> read() const;
-  TT std::vector<T> read(std::initializer_list<int> slab_size,
-                         std::initializer_list<hsize_t> index) const;
+  TT std::vector<T> read(std::vector<int> slab_size,
+                         std::vector<hsize_t> index) const;
 
   Shape shape() const;
   bool is_chunked() const;
@@ -43,10 +43,10 @@ public:
   std::string debug() const;
 
 private:
-  TT void write(const std::vector<T>& data, Shape slab, std::initializer_list<hsize_t> index);
-  TT std::vector<T> read(Shape slab, std::initializer_list<hsize_t> index) const;
+  TT void write(const std::vector<T>& data, Shape slab, std::vector<hsize_t> index);
+  TT std::vector<T> read(Shape slab, std::vector<hsize_t> index) const;
 
-  Shape slab_shape(std::initializer_list<int> list) const;
+  Shape slab_shape(std::vector<int> list) const;
 };
 
 }

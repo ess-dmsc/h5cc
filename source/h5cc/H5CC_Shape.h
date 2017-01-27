@@ -13,10 +13,9 @@ public:
   Shape(const H5::DataSpace& sp);
   Shape(std::vector<hsize_t> dimensions,
         std::vector<hsize_t> max_dimensions = {});
-  Shape(std::initializer_list<hsize_t> dimensions,
-        std::initializer_list<hsize_t> max_dimensions = {});
 
-  Shape slab_shape(std::initializer_list<int> list) const;
+  Shape slab_shape(std::vector<int> list) const;
+  std::vector<hsize_t> max_extent(const Shape& slab, std::vector<hsize_t> index) const;
   size_t data_size() const;
 
   bool contains(const Shape& other) const;
@@ -27,8 +26,8 @@ public:
   bool can_contain(const std::vector<hsize_t>& index) const;
   bool can_contain(const Shape& other, const std::vector<hsize_t>& index) const;
 
-  void select_slab(const Shape& slabspace, std::initializer_list<hsize_t> index);
-  void select_element(std::initializer_list<hsize_t> index);
+  void select_slab(const Shape& slabspace, std::vector<hsize_t> index);
+  void select_element(std::vector<hsize_t> index);
 
   size_t rank() const;
 
@@ -41,13 +40,14 @@ public:
   H5::DataSpace dataspace() const { return dataspace_; }
 
   std::string debug() const;
+  static std::string dims_to_string(const std::vector<hsize_t>& d);
+  static bool extendable(const std::vector<hsize_t>);
 
 private:
   H5::DataSpace dataspace_;
   std::vector<hsize_t> dims_;
   std::vector<hsize_t> max_dims_;
 
-  static std::string dims_to_string(const std::vector<hsize_t>& d);
 };
 
 }

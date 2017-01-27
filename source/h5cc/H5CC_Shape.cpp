@@ -29,12 +29,6 @@ Shape::Shape(const H5::DataSpace& sp)
   max_dims_ = max_dims;
 }
 
-Shape::Shape (std::initializer_list<hsize_t> dimensions,
-              std::initializer_list<hsize_t> max_dimensions)
-  : Shape(std::vector<hsize_t>(dimensions.begin(), dimensions.end()),
-          std::vector<hsize_t>(max_dimensions.begin(), max_dimensions.end()))
-{}
-
 Shape::Shape (std::vector<hsize_t> dimensions,
               std::vector<hsize_t> max_dimensions)
 {
@@ -77,7 +71,7 @@ hsize_t Shape::max_dim(size_t d) const
     return 0;
 }
 
-Shape Shape::slab_shape(std::initializer_list<int> list) const
+Shape Shape::slab_shape(std::vector<int> list) const
 {
   Shape ret;
   if (list.size() <= dims_.size())
@@ -102,6 +96,14 @@ Shape Shape::slab_shape(std::initializer_list<int> list) const
 
     ret.dims_ = newdims;
   }
+  return ret;
+}
+
+std::vector<hsize_t> Shape::max_extent(const Shape& slab, std::vector<hsize_t> index) const
+{
+  std::vector<hsize_t> ret;
+  for (size_t i=0; i < rank(); ++i)
+    ret.push_back(std::max(dim(i), slab.dim(i) + index.at(i)));
   return ret;
 }
 
@@ -179,14 +181,13 @@ bool Shape::can_contain(const Shape& other, const std::vector<hsize_t>& index) c
   return true;
 }
 
-void Shape::select_slab(const Shape& slabspace, std::initializer_list<hsize_t> index)
+void Shape::select_slab(const Shape& slabspace, std::vector<hsize_t> index)
 {
-  std::vector<hsize_t> choice(index.begin(), index.end());
-  if (!contains(slabspace, choice))
+  if (!contains(slabspace, index))
     throw std::out_of_range("slab selection out of data shape range");
   try
   {
-    dataspace_.selectHyperslab(H5S_SELECT_SET, slabspace.dims_.data(), choice.data());
+    dataspace_.selectHyperslab(H5S_SELECT_SET, slabspace.dims_.data(), index.data());
   }
   catch (...)
   {
@@ -194,14 +195,13 @@ void Shape::select_slab(const Shape& slabspace, std::initializer_list<hsize_t> i
   }
 }
 
-void Shape::select_element(std::initializer_list<hsize_t> index)
+void Shape::select_element(std::vector<hsize_t> index)
 {
-  std::vector<hsize_t> choice(index.begin(), index.end());
-  if (!contains(choice))
+  if (!contains(index))
     throw std::out_of_range("element selection out of data shape range");
   try
   {
-    dataspace_.selectElements(H5S_SELECT_SET, 1, choice.data());
+    dataspace_.selectElements(H5S_SELECT_SET, 1, index.data());
   }
   catch (...)
   {
@@ -220,6 +220,14 @@ std::string Shape::debug() const
   if (!dataspace_.isSimple())
     ss << " nonsimple";
   return ss.str();
+}
+
+bool Shape::extendable(const std::vector<hsize_t> dims)
+{
+  for (const auto &d : dims)
+    if (d == H5S_UNLIMITED)
+      return true;
+  return false;
 }
 
 std::string Shape::dims_to_string(const std::vector<hsize_t>& d)

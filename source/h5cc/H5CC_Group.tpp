@@ -98,30 +98,25 @@ TT void Groupoid<T>::clear()
 }
 
 TT TDT DataSet Groupoid<T>::create_dataset(std::string name,
-                            std::initializer_list<hsize_t> dimensions,
-                            std::initializer_list<hsize_t> chunk_dimensions)
+                            std::vector<hsize_t> dimensions,
+                            std::vector<hsize_t> chunk_dimensions)
 {
   DataSet ret;
   try
   {
-    std::vector<hsize_t> maxdims(dimensions.begin(), dimensions.end());
-    std::vector<hsize_t> chunkd(chunk_dimensions.begin(), chunk_dimensions.end());
-    bool extendable = false;
-    for (const auto &d : maxdims)
-      if (d == H5S_UNLIMITED)
-      {
-        extendable = true;
-        break;
-      }
-
+    Shape chunkspace(chunk_dimensions);
     Shape filespace;
-    if (extendable)
-      filespace = Shape(chunkd, maxdims);
+    if (Shape::extendable(dimensions))
+      filespace = Shape(chunk_dimensions, dimensions);
     else
-      filespace = Shape(maxdims);
-    Shape chunkspace(chunkd);
+      filespace = Shape(dimensions);
 
-    H5::DSetCreatPropList  plist;
+    if (!filespace.rank())
+      throw std::out_of_range("invalid dataset dimensions=" +
+                              Shape::dims_to_string(dimensions) + " chunk=" +
+                              Shape::dims_to_string(chunk_dimensions));
+
+    H5::DSetCreatPropList plist;
     if (chunkspace.rank() && filespace.contains(chunkspace))
     {
       plist.setChunk(chunkspace.rank(), chunkspace.shape().data());
@@ -141,8 +136,8 @@ TT TDT DataSet Groupoid<T>::create_dataset(std::string name,
 }
 
 TT TDT DataSet Groupoid<T>::require_dataset(std::string name, 
-                            std::initializer_list<hsize_t> dims,
-                            std::initializer_list<hsize_t> chunkdims)
+                            std::vector<hsize_t> dims,
+                            std::vector<hsize_t> chunkdims)
 {
   if (has_dataset(name))
     remove(name);
