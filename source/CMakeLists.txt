@@ -26,6 +26,8 @@ set(
 
 add_executable(h5cc_test ${sources_h5cc_test})
 
+add_library(h5cc ${sources_H5CC})
+
 target_link_libraries(
   h5cc_test
   ${HDF5_LIBRARIES}
