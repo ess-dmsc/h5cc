@@ -9,9 +9,9 @@ This is a better C++ library for HDF5. It follows modern C++ idioms. It doesn't 
 Copy it to your project and use it. The included main.cpp has examples of how to use it.
 
 You can also compile and run tests.
-Go to some build directory, a different directory, not this directory. Run the following:
-cmake ./sourcepath
-make
+
+Go to some build directory, different from source directory and run:
+cmake ./path/to/source && make
 
 ### Contribution guidelines ###
 
