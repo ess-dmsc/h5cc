@@ -1,5 +1,4 @@
-#ifndef H5CC_DATASET_H
-#define H5CC_DATASET_H
+#pragma once
 
 #include "H5CC_Shape.h"
 #include "H5CC_Location.h"
@@ -20,21 +19,24 @@ public:
   DataSet();
   DataSet(H5::DataSet ds, std::string name);
 
-  TT void write(const T& data, std::vector<hsize_t> index);
+  TT void write(const T& data, const std::vector<hsize_t>& index);
   TT void write(const std::vector<T>& data);
   TT void write(const std::vector<T>& data,
-                std::vector<hsize_t> slab_size,
-                std::vector<hsize_t> index);
+                const std::vector<hsize_t>& slab_size,
+                const std::vector<hsize_t>& index);
 
   TT void append(const std::vector<T>& data,
-                 std::vector<hsize_t> slab_size,
-                 std::vector<hsize_t> index);
+                 const std::vector<hsize_t>& slab_size,
+                 const std::vector<hsize_t>& index);
 
 
-  TT T read(std::vector<hsize_t> index) const;
+  TT T read(const std::vector<hsize_t>& index) const;
   TT std::vector<T> read() const;
-  TT std::vector<T> read(std::vector<hsize_t> slab_size,
-                         std::vector<hsize_t> index) const;
+  TT std::vector<T> read(const std::vector<hsize_t>& slab_size,
+                         const std::vector<hsize_t>& index) const;
+  TT void read(std::vector<T>& data,
+               const std::vector<hsize_t>& slab_size,
+               const std::vector<hsize_t>& index) const;
 
   Shape shape() const;
   bool is_chunked() const;
@@ -45,10 +47,10 @@ public:
   std::string debug() const;
 
 private:
-  TT void write(const std::vector<T>& data, Shape slab, std::vector<hsize_t> index);
-  TT std::vector<T> read(Shape slab, std::vector<hsize_t> index) const;
+  TT void write(const std::vector<T>& data, Shape slab, const std::vector<hsize_t>& index);
+  TT void read(std::vector<T>& data, Shape slab, const std::vector<hsize_t>& index) const;
 
-  Shape slab_shape(std::vector<hsize_t> list) const;
+  Shape slab_shape(const std::vector<hsize_t>& list) const;
 };
 
 }
@@ -57,4 +59,3 @@ private:
 
 #include "H5CC_DataSet.tpp"
 
-#endif
