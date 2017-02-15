@@ -101,6 +101,7 @@ TT std::vector<T> DataSet::read(Shape slab, std::vector<hsize_t> index) const
   {
     Exception::rethrow();
   }
+  return std::vector<T>();
 }
 
 TT std::vector<T> DataSet::read(std::vector<hsize_t> slab_size,
