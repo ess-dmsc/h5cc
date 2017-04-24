@@ -1,2 +1,2 @@
 rm ./*.h5
-./h5cc_test
+./test/h5cc_test
