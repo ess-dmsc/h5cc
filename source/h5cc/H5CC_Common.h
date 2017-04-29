@@ -6,4 +6,6 @@ namespace H5CC {
 
   const hsize_t kMax = H5S_UNLIMITED;
 
+  void exceptions_off();
+
 }
