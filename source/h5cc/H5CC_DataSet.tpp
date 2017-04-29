@@ -84,6 +84,7 @@ TT T DataSet::read(const std::vector<hsize_t>& index) const
   {
     Exception::rethrow();
   }
+  return T();
 }
 
 TT void DataSet::read_p(std::vector<T>& data, Shape slab, const std::vector<hsize_t>& index) const
