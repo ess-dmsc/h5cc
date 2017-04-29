@@ -19,8 +19,8 @@ target_link_libraries(
   ${PROJECT_NAME}
   ${h5cc_LIBRARIES}
   ${GTEST_BOTH_LIBRARIES}
-  pthread
-  dl
+  ${CMAKE_THREAD_LIBS_INIT}
+  #dl
 )
 
 

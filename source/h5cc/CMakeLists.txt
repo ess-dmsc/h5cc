@@ -37,7 +37,7 @@ set(${PROJECT_NAME}_INCLUDE_DIRS
   CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)
 
 set(${PROJECT_NAME}_LIBRARIES
-    -Wl,--whole-archive ${PROJECT_NAME} -Wl,--no-whole-archive
+    ${PROJECT_NAME} ${HDF5_LIBRARIES}
     PARENT_SCOPE)
 
 install(TARGETS ${PROJECT_NAME} DESTINATION lib)
