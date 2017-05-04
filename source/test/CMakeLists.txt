@@ -20,7 +20,6 @@ target_link_libraries(
   ${h5cc_LIBRARIES}
   ${GTEST_BOTH_LIBRARIES}
   ${CMAKE_THREAD_LIBS_INIT}
-  #dl
 )
 
 
