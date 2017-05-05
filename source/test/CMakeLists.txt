@@ -1,25 +1,33 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.11 FATAL_ERROR)
 project(h5cc_test CXX)
+
+enable_testing()
 
 find_package(Threads)
 find_package(GTest)
 
-include_directories(
-  ${CMAKE_SOURCE_DIR}
-  ${h5cc_INCLUDE_DIRS}
-  ${GTEST_INCLUDE_DIRS}
-)
+file(GLOB ${PROJECT_NAME}_sources *.cpp)
+file(GLOB ${PROJECT_NAME}_headers *.h)
+dirs_of(${PROJECT_NAME}_include_dirs "${${PROJECT_NAME}_headers}")
 
 add_executable(
   ${PROJECT_NAME}
-  main.cpp
+  ${${PROJECT_NAME}_sources}
+  ${${PROJECT_NAME}_headers}
+)
+
+target_include_directories(
+  ${PROJECT_NAME}
+  PRIVATE ${h5cc_INCLUDE_DIRS}
+  PRIVATE ${GTEST_INCLUDE_DIRS}
 )
 
 target_link_libraries(
   ${PROJECT_NAME}
-  ${h5cc_LIBRARIES}
   ${GTEST_BOTH_LIBRARIES}
   ${CMAKE_THREAD_LIBS_INIT}
+  ${h5cc_LIBRARIES}
+#  h5cc
 )
 
-
+add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

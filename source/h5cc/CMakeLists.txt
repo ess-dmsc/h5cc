@@ -1,44 +1,41 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.11 FATAL_ERROR)
 project(h5cc CXX)
 
 # HDF5
-#set (HDF5_USE_STATIC_LIBRARIES ON)
-set (HDF5_USE_SHARED_LIBRARIES ON)
-FIND_PACKAGE (HDF5 1.8.15 COMPONENTS CXX HL REQUIRED)
-link_directories ( ${HDF5_LIBRARY_DIRS} )
+set(HDF5_USE_SHARED_LIBRARIES ON)
+FIND_PACKAGE(HDF5 1.8.15 COMPONENTS CXX HL REQUIRED)
+add_library(HDF5 INTERFACE IMPORTED)
+set_property(TARGET HDF5 PROPERTY
+    INTERFACE_INCLUDE_DIRECTORIES ${HDF5_INCLUDE_DIRS})
+#link_directories ( ${HDF5_LIBRARY_DIRS} )
 
 file(GLOB ${PROJECT_NAME}_sources *.cpp)
 file(GLOB ${PROJECT_NAME}_headers *.h *.tpp)
-foreach (_headerFile ${${PROJECT_NAME}_headers})
-    get_filename_component(_dir ${_headerFile} PATH)
-    list (APPEND ${PROJECT_NAME}_include_dirs ${_dir})
-endforeach()
-list(REMOVE_DUPLICATES ${PROJECT_NAME}_include_dirs)
+dirs_of(${PROJECT_NAME}_include_dirs "${${PROJECT_NAME}_headers}")
 
-include_directories(
-  ${${PROJECT_NAME}_include_dirs}
-  ${HDF5_INCLUDE_DIRS}
-)
+#message(STATUS "sources   " ${${PROJECT_NAME}_sources})
+#message(STATUS "headers   " ${${PROJECT_NAME}_headers})
+#message(STATUS "inc dir   " ${${PROJECT_NAME}_include_dirs})
 
 add_library(
   ${PROJECT_NAME}
   ${${PROJECT_NAME}_sources}
+  ${${PROJECT_NAME}_headers}
 )
+
+target_include_directories(
+  ${PROJECT_NAME}
+  PUBLIC ${${PROJECT_NAME}_include_dirs}
+  PUBLIC ${HDF5_INCLUDE_DIRS}
+  )
 
 target_link_libraries(
   ${PROJECT_NAME}
   ${HDF5_LIBRARIES}
 )
 
-# Expose public includes
-set(${PROJECT_NAME}_INCLUDE_DIRS
-  ${${PROJECT_NAME}_include_dirs}
-  ${HDF5_INCLUDE_DIRS}
-  CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)
-
 set(${PROJECT_NAME}_LIBRARIES
     ${PROJECT_NAME}
-    ${HDF5_LIBRARIES}
     PARENT_SCOPE)
 
 install(TARGETS ${PROJECT_NAME} DESTINATION lib)
