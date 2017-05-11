@@ -11,7 +11,7 @@ set(unitTest_INC
     ../test/ExceptionUtil.h
 )
 
-set(target unit_tests)
+set(target h5cc_test)
 add_executable(
     ${target}
     ${h5cc_SRC}
