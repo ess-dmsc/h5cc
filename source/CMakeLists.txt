@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.11 FATAL_ERROR)
-project(h5cc_and_test CXX)
+project(h5cc CXX)
 option(test_h5cc "Build all tests." ON)
 
 # Must use GNUInstallDirs to install libraries into correct
@@ -35,9 +35,3 @@ function(dirs_of retname file_list)
 endfunction(dirs_of)
 
 add_subdirectory(h5cc)
-
-message(STATUS "libs parent scope " ${h5cc_LIBRARIES})
-
-if (test_h5cc)
-  add_subdirectory(test)
-endif()

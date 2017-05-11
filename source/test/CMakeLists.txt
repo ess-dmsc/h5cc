@@ -1,33 +1,37 @@
-cmake_minimum_required(VERSION 2.8.11 FATAL_ERROR)
-project(h5cc_test CXX)
-
 enable_testing()
 
-find_package(Threads)
-find_package(GTest)
+find_package(Threads REQUIRED)
+find_package(GTest REQUIRED)
 
-file(GLOB ${PROJECT_NAME}_sources *.cpp)
-file(GLOB ${PROJECT_NAME}_headers *.h)
-dirs_of(${PROJECT_NAME}_include_dirs "${${PROJECT_NAME}_headers}")
+set(unitTest_SRC
+    ../test/main.cpp
+)
 
+set(unitTest_INC
+    ../test/ExceptionUtil.h
+)
+
+set(target unit_tests)
 add_executable(
-  ${PROJECT_NAME}
-  ${${PROJECT_NAME}_sources}
-  ${${PROJECT_NAME}_headers}
+    ${target}
+    ${h5cc_SRC}
+    ${h5cc_INC}
+    ${unitTest_SRC}
+    ${unitTest_INC}
 )
 
 target_include_directories(
-  ${PROJECT_NAME}
-  PRIVATE ${h5cc_INCLUDE_DIRS}
-  PRIVATE ${GTEST_INCLUDE_DIRS}
+    ${target}
+    PRIVATE ${GTEST_INCLUDE_DIRS}
+    PRIVATE ${HDF5_INCLUDE_DIRS}
+    PRIVATE ${h5cc_INC_DIR}
 )
 
 target_link_libraries(
-  ${PROJECT_NAME}
-  ${GTEST_BOTH_LIBRARIES}
-  ${CMAKE_THREAD_LIBS_INIT}
-  ${h5cc_LIBRARIES}
-#  h5cc
+    ${target}
+    ${GTEST_BOTH_LIBRARIES}
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${HDF5_LIBRARIES}
 )
 
-add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
+add_test(NAME ${target} COMMAND ${target})
