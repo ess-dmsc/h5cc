@@ -34,4 +34,6 @@ target_link_libraries(
     ${HDF5_LIBRARIES}
 )
 
+set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/test/")
+
 add_test(NAME ${target} COMMAND ${target})

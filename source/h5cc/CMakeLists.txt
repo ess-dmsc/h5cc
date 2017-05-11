@@ -49,6 +49,9 @@ target_link_libraries(
     ${HDF5_LIBRARIES}
 )
 
+set_target_properties(${target} PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/")
+set_target_properties(${target} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/")
+
 install(TARGETS ${target} DESTINATION lib)
 install(FILES ${h5cc_INC} DESTINATION include/h5cc)
 

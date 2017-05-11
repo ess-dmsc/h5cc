@@ -22,7 +22,7 @@ node ("boost") {
         }
 
         stage("Run test") {
-            sh "./h5cc_test --gtest_output=xml:LogTests.xml"
+            sh "./test/h5cc_test --gtest_output=xml:LogTests.xml"
             junit '*Tests.xml'
         }
  
