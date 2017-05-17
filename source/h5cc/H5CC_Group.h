@@ -36,7 +36,11 @@ public:
   Groupoid<H5::Group> require_group(std::string name);
 };
 
-using Group = Groupoid<H5::Group>;
+class Group : public Groupoid<H5::Group>
+{
+  //This his hacky. Can we get name of group from hid?
+  Group(hid_t hid, std::string name = "_from_hid");
+};
 
 }
 
