@@ -3,6 +3,17 @@
 
 namespace H5CC {
 
+Group::Group()
+  : Groupoid<H5::Group>()
+{
+}
+
+Group::Group(H5::Group g, std::string name)
+  : Groupoid<H5::Group>(g, name)
+{
+}
+
+
 Group::Group(hid_t hid, std::string name)
 {
   try

@@ -38,6 +38,8 @@ public:
 
 class Group : public Groupoid<H5::Group>
 {
+  Group();
+  Group(H5::Group g, std::string name);
   //This his hacky. Can we get name of group from hid?
   Group(hid_t hid, std::string name = "_from_hid");
 };
