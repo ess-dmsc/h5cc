@@ -29,4 +29,6 @@ private:
 
 };
 
+Group group_from_hid(hid_t hid, std::string name = "_from_hid");
+
 }

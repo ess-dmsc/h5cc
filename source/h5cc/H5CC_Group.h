@@ -34,16 +34,10 @@ public:
   Groupoid<H5::Group> open_group(std::string name) const;
   Groupoid<H5::Group> create_group(std::string name);
   Groupoid<H5::Group> require_group(std::string name);
+
 };
 
-class Group : public Groupoid<H5::Group>
-{
-public:
-  Group();
-  Group(H5::Group g, std::string name);
-  //This his hacky. Can we get name of group from hid?
-  Group(hid_t hid, std::string name = "_from_hid");
-};
+using Group = Groupoid<H5::Group>;
 
 }
 

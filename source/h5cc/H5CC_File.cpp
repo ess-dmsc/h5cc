@@ -69,4 +69,10 @@ void File::close()
   name_.clear();
 }
 
+Group group_from_hid(hid_t hid, std::string name)
+{
+  return Group(H5::Group(hid), name);
+}
+
+
 }
