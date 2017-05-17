@@ -38,6 +38,7 @@ public:
 
 class Group : public Groupoid<H5::Group>
 {
+public:
   Group();
   Group(H5::Group g, std::string name);
   //This his hacky. Can we get name of group from hid?
