@@ -2,7 +2,7 @@
  * h5cc_test Jenkinsfile
  */
 
-node ("boost") {
+node ("cluster") {
 
     stage("Checkout projects") {
         checkout scm
@@ -11,14 +11,11 @@ node ("boost") {
     dir("build") {
         stage("Run CMake") {
             sh 'rm -rf ./*'
-            sh '/opt/cmake/cmake-3.7.1-Linux-x86_64/bin/cmake --version'
-            sh "HDF5_ROOT=$HDF5_ROOT \
-                CMAKE_PREFIX_PATH=$HDF5_ROOT \
-                /opt/cmake/cmake-3.7.1-Linux-x86_64/bin/cmake -Dtest_h5cc=OFF ../source"
-        }
-
-        stage("Build project") {
-            sh "make VERBOSE=1"
+            sh """module load gcc/4.9.2
+                  module load hdf5/1.8.15p1
+                  module load cmake/3.7.2
+                  cmake -Dtest_h5cc=OFF ../source
+                  make VERBOSE=1"""
         }
 
         stage("Run test") {
