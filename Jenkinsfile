@@ -18,10 +18,6 @@ node ("cluster") {
                   make VERBOSE=1"""
         }
 
-        stage("Run test") {
-            sh "./test/h5cc_test --gtest_output=xml:LogTests.xml"
-            junit '*Tests.xml'
-        }
  
     }
 }
