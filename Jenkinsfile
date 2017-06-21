@@ -25,7 +25,7 @@ node ("cluster") {
                 sh """module load gcc/4.9.2
                     module load hdf5/1.8.15p1
                     module load cmake/3.7.2
-                    cmake -Dtest_h5cc=OFF ../source
+                    HDF5_ROOT=/mnt/lustre/apps/hdf5/1.8.15p1-shared cmake -Dtest_h5cc=OFF ../source
                     make VERBOSE=1"""
             }
         } catch (e) {
