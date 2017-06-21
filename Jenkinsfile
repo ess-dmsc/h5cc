@@ -20,7 +20,7 @@ node ("cluster") {
 
     dir("build") {
         try {
-            stage("Run CMake") {
+            stage("Build") {
                 sh 'rm -rf ./*'
                 sh """module load gcc/4.9.2
                     module load hdf5/1.8.15p1
