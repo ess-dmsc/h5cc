@@ -24,7 +24,7 @@ node ("boost && fedora") {
                 sh '/opt/cmake/cmake-3.7.1-Linux-x86_64/bin/cmake --version'
                 sh "HDF5_ROOT=$HDF5_ROOT \
                      CMAKE_PREFIX_PATH=$HDF5_ROOT \
-                     /opt/cmake/cmake-3.7.1-Linux-x86_64/bin/cmake -DTESTS=1 ../source"
+                     /opt/cmake/cmake-3.7.1-Linux-x86_64/bin/cmake -DTESTS=1 -Dh5noversioncheck=ON ../source"
             }
         } catch (e) {
             failure_function(e, 'CMake failed')
