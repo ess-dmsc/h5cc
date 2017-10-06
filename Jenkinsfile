@@ -9,6 +9,8 @@ def failure_function(exception_obj, failureMessage) {
 }
 
 node ("boost") {
+    cleanWs()
+    
     try {
         stage("Checkout projects") {
             checkout scm
@@ -29,7 +31,7 @@ node ("boost") {
         } catch (e) {
             failure_function(e, 'CMake failed')
         }
-        
+
         try {
             stage("Build project") {
                 sh "make VERBOSE=1"
@@ -47,6 +49,6 @@ node ("boost") {
             junit '*Tests.xml'
             failure_function(e, 'Tests failed')
         }
- 
+
     }
 }
