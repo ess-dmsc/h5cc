@@ -28,6 +28,9 @@ add_library(
   ${${PROJECT_NAME}_headers}
 )
 
+# shared libraries need PIC
+set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
+
 target_include_directories(
   ${PROJECT_NAME}
   PUBLIC ${${PROJECT_NAME}_include_dirs}

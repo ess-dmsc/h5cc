@@ -107,12 +107,50 @@ TEST_F(DatasetTests, CreateExendableChunckedDataset)
   ASSERT_TRUE(DatasetTests::file.open_dataset("data").shape().data_size() == 24);
 }
 
+class Derived1 : public H5CC::DataSet
+{
+public:
+ Derived1(H5CC::DataSet d)
+   : H5CC::DataSet(d)
+ {
+   std::cout << "Created Derived1\n";
+ }
+
+ Derived1(H5CC::Group g, std::string name)
+   : Derived1(g.create_dataset<int>(name, {3,3}))
+ {
+   std::cout << "Created Derived1 default\n";
+ }
+};
+
+class Derived2 : public H5CC::DataSet
+{
+public:
+ Derived2(H5CC::DataSet d)
+ : H5CC::DataSet(d)
+ {
+   std::cout << "Created Derived2\n";
+ }
+};
+
 int main(int argc, char **argv)
 {
   H5CC::exceptions_off();
+
+  H5CC::File f("derived.h5", H5CC::Access::rw_require);
+  auto group = f.create_group("blabla");
+
+  std::vector<std::shared_ptr<H5CC::DataSet>> datasets;
+  datasets.push_back(std::make_shared<H5CC::DataSet>(group.create_dataset<int>("generic", {2,2})));
+  datasets.push_back(std::make_shared<Derived1>(group.create_dataset<int>("d1", {3,3})));
+  datasets.push_back(std::make_shared<Derived2>(group.create_dataset<int>("d2", {4,4})));
+  datasets.push_back(std::make_shared<Derived1>(group, "fancyname"));
+
+
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
+
 
 /*
 
